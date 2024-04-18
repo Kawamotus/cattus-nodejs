@@ -1,6 +1,8 @@
 import express from "express";
 const app = express();
 
+//Kawamoto lixo
+
 import mongoose from "mongoose";
 
 app.set("view engine", "ejs");
