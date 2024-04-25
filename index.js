@@ -19,21 +19,11 @@ app.use("/", EmployeeController);
 app.use("/", NotificationController);
 app.use("/", StockController);
 
-app.set("view engine", "ejs");
-
-app.use(express.static("public"));
-
 mongoose.connect("mongodb://localhost:27017");
 
 app.get("/", (req, res) =>{
-    let titulo = "Início | Nome da empresa";
-    res.render("index", {
-        titulo: titulo
-    });
+    res.send("Oi Mundo");
 });
-
-
-
 
 app.listen(8080, function (erro){
     if(erro){
