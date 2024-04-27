@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const animal = mongoose.Schema({
+const animal = new mongoose.Schema({
     petName: String,
     petBirth: Date,
     petEntry: Date,

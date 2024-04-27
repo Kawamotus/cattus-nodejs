@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const company = mongoose.Schema({
+const company = new mongoose.Schema({
     companyCNPJ: String, //number?
     companyName: String,
     companyDetails: {

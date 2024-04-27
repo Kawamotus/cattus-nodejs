@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const notification = mongoose.Schema({
+const notification = new mongoose.Schema({
     notificationDate: String,
     notificationTarget: String, //empresa, usuário, depende do caso
     notificationOrigin: String, //insumos, pets, funcionarios, alguma coisa

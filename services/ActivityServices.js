@@ -5,6 +5,9 @@ const Activity = mongoose.model("activity", activity);
 
 class ActivityServices{
 
+    SelectAllById(id){
+        return Activity.find({_id: id});
+    }
 }
 
 export default new ActivityServices();

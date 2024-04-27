@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const activity = mongoose.Schema({
+const activity = new mongoose.Schema({
     activityAuthor: String, //_id do bicho
     activtyData: {
         activityName: String,
