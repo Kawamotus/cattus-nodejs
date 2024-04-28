@@ -9,6 +9,10 @@ class AnimalServices{
         return Animal.find();
     }
 
+    SelectOne(id){
+        return Animal.findOne({_id: id});
+    }
+
     Create(petName, petBirth, petEntry, petGender, petType, petBreed, petSize, petComorbidities, petObs, petVaccCard, companyCode){
         //companyCode pegamos da sessao?
         const newAnimal = new Animal({
