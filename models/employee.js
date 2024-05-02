@@ -6,7 +6,11 @@ const employee = new mongoose.Schema({
     employeePassword: String,
     employeePicture: String,
     employeeAccessLevel: Number,
-    companyCode: String
+    company: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Company', //id da empresa de origem do funcionario
+        require: true
+    }
 });
 
 export default employee;

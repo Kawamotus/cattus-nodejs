@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
 const activity = new mongoose.Schema({
-    activityAuthor: String, //_id do bicho
+    activityAuthor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Animal', //_id do bicho
+        require: true
+    }, 
     activtyData: {
         activityName: String,
         activityStart: Date,
