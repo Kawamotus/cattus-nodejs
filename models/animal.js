@@ -13,7 +13,11 @@ const animal = new mongoose.Schema({
     petComorbidities: String,
     petObs: String,
     petVaccCard: String,
-    companyCode: String //id da empresa de origem do pet
+    company: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Company', //id da empresa de origem do pet
+        require: true
+    } 
 });
 
 export default animal;
