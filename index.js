@@ -11,15 +11,18 @@ import StockController from "./controllers/StockController.js";
 
 const app = express();
 
-app.use("/", ActivityController);
-app.use("/", AnimalController);
-app.use("/", CameraController);
-app.use("/", CompanyController);
-app.use("/", EmployeeController);
-app.use("/", NotificationController);
-app.use("/", StockController);
+app.use(express.urlencoded({extended: false}))
+app.use(express.json())
 
-mongoose.connect("mongodb://localhost:27017");
+app.use("/activity", ActivityController);
+app.use("/animal", AnimalController);
+app.use("/camera", CameraController);
+app.use("/company", CompanyController);
+app.use("/employee", EmployeeController);
+app.use("/notification", NotificationController);
+app.use("/stock", StockController);
+
+mongoose.connect("mongodb://localhost:27017/cattus-api");
 
 app.get("/", (req, res) =>{
     res.send("Oi Mundo");
