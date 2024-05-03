@@ -1,65 +1,30 @@
 import mongoose from "mongoose";
 import animal from "../models/animal.js";
 
-const Animal = mongoose.model("animal", animal);
+const Animal = mongoose.model("Animal", animal);
 
 class AnimalServices{
 
-    SelectAll(){
-        return Animal.find();
+    SelectAll(company){
+        return Animal.find({company: company}).populate("company")
     }
 
     SelectOne(id){
-        return Animal.findOne({_id: id});
+        return Animal.findOne({_id: id}).populate("company");
     }
 
-    Create(petName, petBirth, petEntry, petGender, petType, petBreed, petSize, petComorbidities, petObs, petVaccCard, companyCode){
+    Create(data){
         //companyCode pegamos da sessao?
-        const newAnimal = new Animal({
-            petName: petName,
-            petBirth: petBirth,
-            petEntry: petEntry,
-            petGender: petGender,
-            petCharacteristics:{
-                petType: petType,
-                petBreed: petBreed,
-                petSize: petSize
-            },
-            petComorbidities: petComorbidities,
-            petObs: petObs,
-            petVaccCard: petVaccCard,
-            companyCode: companyCode
-        });
-        newAnimal.save();
+        const newAnimal = new Animal(data);
+        return newAnimal.save()
     }
 
     Delete(id){
-        Animal.findByIdAndDelete(id).then(()=>{
-            console.log("Animal " + id + " deletado com sucesso!");
-        }).catch(err =>{
-            console.log(err);
-        });
+        return Animal.findByIdAndDelete(id)
     }
 
-    Update(id, petName, petBirth, petEntry, petGender, petType, petBreed, petSize, petComorbidities, petObs, petVaccCard){
-        Animal.findByIdAndUpdate(id, {
-            petName: petName,
-            petBirth: petBirth,
-            petEntry: petEntry,
-            petGender: petGender,
-            petCharacteristics:{
-                petType: petType,
-                petBreed: petBreed,
-                petSize: petSize
-            },
-            petComorbidities: petComorbidities,
-            petObs: petObs,
-            petVaccCard: petVaccCard,
-        }).then(() => {
-            console.log("Animal "+ petName + " atualizado com sucesso!");
-        }).catch(err =>{
-            console.log(err);
-        });
+    Update(id, data){
+        return Animal.findByIdAndUpdate(id, data)
     }
 }
 
