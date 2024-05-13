@@ -1,39 +1,21 @@
 import mongoose from "mongoose";
 import company from "../models/company.js";
 
-const Company = mongoose.model("company", company);
+const Company = mongoose.model("Company", company);
 
 class CompanyServices{
 
-    Create(companyName, companyCNPJ, companyLogo, companyColor){
-        const newCompany = new Company({
-            companyName: companyName,
-            companyCNPJ: companyCNPJ,
-            companyDetails:{
-                companyColor: companyColor,
-                companyLogo: companyLogo
-            }
-        });
-        newCompany.save();
+    Create(data){
+        const newCompany = new Company(data);
+        return newCompany.save();
     }
 
     SelectOne(id){
         return Company.findOne({_id: id});
     }
 
-    Update(id){
-        Company.findByIdAndUpdate(id, {
-            companyName: companyName,
-            companyCNPJ: companyCNPJ,
-            companyDetails:{
-                companyColor: companyColor,
-                companyLogo: companyLogo
-            }
-        }).then(()=>{
-            console.log("Empresa " + companyName + " atualizada com sucesso!");
-        }).catch(err => {
-            console.log(err);
-        });
+    Update(id, data){
+        return Company.findByIdAndUpdate(id, data)
     }
 
     //delete?
