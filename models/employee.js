@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcryt from "bcrypt"
 
 const employee = new mongoose.Schema({
     employeeName: String,
@@ -12,5 +13,10 @@ const employee = new mongoose.Schema({
         require: true
     }
 });
+
+employee.pre('save', async function(next) {
+    const hash = await bcryt.hash(this.employeePassword, 10)
+    this.employeePassword = hash
+  })
 
 export default employee;
