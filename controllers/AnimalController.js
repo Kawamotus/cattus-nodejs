@@ -30,7 +30,7 @@ router.get("/select-one/:animal_id", (req, res) => {
     }).catch(error => {
         console.log(error);
         res.send({
-            message: "Erro ao lista o animal.",
+            message: "Erro ao listar o animal.",
         });
     })
 })
@@ -46,7 +46,7 @@ router.get("/delete/:animal_id", (req, res) => {
     }).catch(error => {
         console.log(error);
         res.send({
-            message: "Erro ao lista o animal.",
+            message: "Erro ao deletar o animal.",
         });
     })
 })

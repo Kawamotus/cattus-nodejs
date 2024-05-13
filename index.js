@@ -33,6 +33,6 @@ app.listen(8080, function (erro){
         console.log("Erro " + erro)
     }
     else{
-        console.log("servidor iniciado")
+        console.log("Servidor iniciado: http://localhost:8080")
     }
 })
