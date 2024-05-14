@@ -11,7 +11,7 @@ class CompanyServices{
     }
 
     SelectOne(id){
-        return Company.findOne({_id: id});
+        return Company.findById(id);
     }
 
     Update(id, data){

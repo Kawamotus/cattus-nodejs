@@ -31,7 +31,7 @@ router.post("/update/:company_id", (req, res) => {
     }).catch(error => {
         console.log(error);
         res.send({
-            message: "Erro ao cadastrar empresa.",
+            message: "Erro ao atualizar empresa.",
         });
     })
 });
