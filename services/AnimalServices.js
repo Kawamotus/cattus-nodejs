@@ -10,7 +10,7 @@ class AnimalServices{
     }
 
     SelectOne(id){
-        return Animal.findOne({_id: id}).populate("company");
+        return Animal.findById(id).populate("company");
     }
 
     Create(data){

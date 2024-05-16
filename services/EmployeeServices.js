@@ -6,37 +6,24 @@ const Employee = mongoose.model("employee", employee);
 class EmployeeServices{
 
     SelectAll(){
-        return Employee.find();
+        return Employee.find().populate("company");
     }
 
     SelectOne(id){
-        return Employee.findOne({_id: id});
+        return Employee.findById(id).populate("company");
     }
 
-    CreateUser(employeeName, employeeEmail, employeePassword, employeePicture, employeeAccessLevel, companyCode){
-        //criar com elementos necessarios como hash nas senhas
+    Create(data){
+        const newUser = new Employee(data);
+        return newUser.save();
     }
 
-    Update(id, employeeName, employeeEmail, employeePassword, employeePicture, employeeAccessLevel){
-        Employee.findByIdAndUpdate(id,{
-            employeeName: employeeName,
-            employeeEmail: employeeEmail,
-            employeePassword: employeePassword,
-            employeePicture: employeePicture,
-            employeeAccessLevel: employeeAccessLevel
-        }).then(() => {
-            console.log("funcionario " + employeeName + " atualizado com sucesso!");
-        }).catch(err =>{
-            console.log(err);
-        });
+    Update(id, data){
+        return Employee.findByIdAndUpdate(id, data)
     }
 
     Delete(id){
-        Employee.findByIdAndDelete(id).then(() => {
-            console.log("cliente " + id + " deletado com sucesso!");
-        }).catch(err =>{
-            console.log(err);
-        });
+        return Employee.findByIdAndDelete(id)
     }
 }
 
