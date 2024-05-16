@@ -1,5 +1,7 @@
 import express from "express";
 import EmployeeServices from "../services/EmployeeServices.js";
+import verificarCamposNecessarios from "../middlewares/checaCampos.js";
+import Employee from "../models/employee.js";
 
 const router = express.Router();
 
@@ -51,7 +53,7 @@ router.get("/delete/:employee_id", (req, res) => {
     })
 })
 
-router.post("/create", (req, res) => {
+router.post("/create", verificarCamposNecessarios(Employee), (req, res) => {
     const data = req.body
 
     const operation = EmployeeServices.Create(data)

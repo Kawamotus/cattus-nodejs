@@ -1,9 +1,11 @@
 import express from "express";
 import StockServices from "../services/StockServices.js";
+import verificarCamposNecessarios from "../middlewares/checaCampos.js";
+import Stock from "../models/stock.js";
 
 const router = express.Router();
 
-router.post("/create", (req, res) => {
+router.post("/create", verificarCamposNecessarios(Stock), (req, res) => {
     const operation = StockServices.Create(req.body)
     operation.then(result => {
         res.send({

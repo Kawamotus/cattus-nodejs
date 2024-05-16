@@ -1,5 +1,7 @@
 import express from "express";
 import AnimalServices from "../services/AnimalServices.js";
+import verificarCamposNecessarios from "../middlewares/checaCampos.js"
+import Animal from "../models/animal.js"
 
 const router = express.Router();
 
@@ -51,7 +53,7 @@ router.get("/delete/:animal_id", (req, res) => {
     })
 })
 
-router.post("/create", (req, res) => {
+router.post("/create", verificarCamposNecessarios(Animal), (req, res) => {
     const data = req.body
 
     const operation = AnimalServices.Create(data)

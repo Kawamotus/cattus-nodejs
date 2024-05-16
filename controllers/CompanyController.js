@@ -1,9 +1,11 @@
 import express from "express";
 import CompanyServices from "../services/CompanyServices.js";
+import verificarCamposNecessarios from "../middlewares/checaCampos.js"
+import Company from "../models/company.js"
 
 const router = express.Router();
 
-router.post("/create", (req, res) => {
+router.post("/create", verificarCamposNecessarios(Company), (req, res) => {
     const operation = CompanyServices.Create(req.body)
     operation.then(result => {
         res.send({
