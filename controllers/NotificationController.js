@@ -35,13 +35,13 @@ router.get("/select-all/:target_id", (req, res) => {
     }).catch(error => {
         console.log(error);
         res.send({
-            message: "Erro ao listar as câmeras.",
+            message: "Erro ao listar as notificações.",
         });
     })
 })
 
-router.get("/select-one/:camera_id", (req, res) => {
-    const operation = NotificationService.SelectOne(req.params.camera_id)
+router.get("/select-one/:notification_id", (req, res) => {
+    const operation = NotificationService.SelectOne(req.params.notification_id)
 
     operation.then(result => {
         res.send({
@@ -51,13 +51,13 @@ router.get("/select-one/:camera_id", (req, res) => {
     }).catch(error => {
         console.log(error);
         res.send({
-            message: "Erro ao listar a câmera.",
+            message: "Erro ao listar as notificação.",
         });
     })
 })
 
-router.get("/delete/:camera_id", (req, res) => {
-    const operation = NotificationService.Delete(req.params.camera_id)
+router.get("/delete/:notification_id", (req, res) => {
+    const operation = NotificationService.Delete(req.params.notification_id)
 
     operation.then(result => {
         res.send({
@@ -67,7 +67,7 @@ router.get("/delete/:camera_id", (req, res) => {
     }).catch(error => {
         console.log(error);
         res.send({
-            message: "Erro ao deletar a câmera.",
+            message: "Erro ao deletar a notificação.",
         });
     })
 })
