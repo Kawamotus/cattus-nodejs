@@ -1,7 +1,28 @@
 import express from "express";
+import middlewares from "../middlewares/middlewares.js"
+
 import AnimalServices from "../services/AnimalServices.js";
+import Animal from "../models/animal.js"
 
 const router = express.Router();
+
+router.post("/create", middlewares.checkNecessaryFields(Animal), (req, res) => {
+    const data = req.body
+
+    const operation = AnimalServices.Create(data)
+    operation.then(result => {
+        res.send({
+            ok: true,
+            message: "Animal cadastrado com sucesso.",
+            _id: result._id
+        });
+    }).catch(error => {
+        console.log(error);
+        res.send({
+            message: "Erro ao cadastrar animal.",
+        });
+    })
+});
 
 router.get("/select-all/:company_id", (req, res) => {
     const operation = AnimalServices.SelectAll(req.params.company_id)
@@ -50,24 +71,6 @@ router.get("/delete/:animal_id", (req, res) => {
         });
     })
 })
-
-router.post("/create", (req, res) => {
-    const data = req.body
-
-    const operation = AnimalServices.Create(data)
-    operation.then(result => {
-        res.send({
-            ok: true,
-            message: "Animal cadastrado com sucesso.",
-            _id: result._id
-        });
-    }).catch(error => {
-        console.log(error);
-        res.send({
-            message: "Erro ao cadastrar animal.",
-        });
-    })
-});
 
 router.post("/update/:animal_id", (req, res) => {
     const id = req.params.animal_id

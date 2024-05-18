@@ -1,7 +1,28 @@
 import express from "express";
+import middlewares from "../middlewares/middlewares.js"
+
 import EmployeeServices from "../services/EmployeeServices.js";
+import Employee from "../models/employee.js";
 
 const router = express.Router();
+
+router.post("/create", middlewares.checkNecessaryFields(Employee), (req, res) => {
+    const data = req.body
+
+    const operation = EmployeeServices.Create(data)
+    operation.then(result => {
+        res.send({
+            ok: true,
+            message: "Usuário cadastrado com sucesso.",
+            _id: result._id
+        });
+    }).catch(error => {
+        console.log(error);
+        res.send({
+            message: "Erro ao cadastrar usuário.",
+        });
+    })
+});
 
 router.get("/select-all", (req, res) => {
     const operation = EmployeeServices.SelectAll()
@@ -50,24 +71,6 @@ router.get("/delete/:employee_id", (req, res) => {
         });
     })
 })
-
-router.post("/create", (req, res) => {
-    const data = req.body
-
-    const operation = EmployeeServices.Create(data)
-    operation.then(result => {
-        res.send({
-            ok: true,
-            message: "Usuário cadastrado com sucesso.",
-            _id: result._id
-        });
-    }).catch(error => {
-        console.log(error);
-        res.send({
-            message: "Erro ao cadastrar usuário.",
-        });
-    })
-});
 
 router.post("/update/:employee_id", (req, res) => {
     const id = req.params.employee_id

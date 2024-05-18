@@ -1,9 +1,12 @@
 import express from "express";
+import middlewares from "../middlewares/middlewares.js"
+
 import StockServices from "../services/StockServices.js";
+import Stock from "../models/stock.js";
 
 const router = express.Router();
 
-router.post("/create", (req, res) => {
+router.post("/create", middlewares.checkNecessaryFields(Stock), (req, res) => {
     const operation = StockServices.Create(req.body)
     operation.then(result => {
         res.send({
