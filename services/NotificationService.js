@@ -6,11 +6,11 @@ const Notification = mongoose.model("notification", notification);
 class NotificationServices{
 
     SelectAll(id){
-        return Notification.find({notificationTarget: id}).populate("notificationOrigin");
+        return Notification.find({notificationTarget: id}).populate("notificationOrigin").populate("notificationTarget");
     }
 
     SelectOne(id){
-        return Notification.findById(id).populate("notificationOrigin");
+        return Notification.findById(id).populate("notificationOrigin").populate("notificationTarget");
     }
 
     Create(data){
