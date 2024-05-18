@@ -5,9 +5,23 @@ const Activity = mongoose.model("activity", activity);
 
 class ActivityServices{
 
-    SelectAllById(id){
-        return Activity.find({_id: id});
+    SelectAll(id){
+        return Activity.find({activityAuthor: id}).populate("activityAuthor");
     }
+
+    SelectOne(id){
+        return Activity.findById(id).populate("activityAuthor");
+    }
+
+    Create(data){
+        const newActivity = new Activity(data);
+        return newActivity.save()
+    }
+
+    Delete(id){
+        return Activity.findByIdAndDelete(id)
+    }
+
 }
 
 export default new ActivityServices();
