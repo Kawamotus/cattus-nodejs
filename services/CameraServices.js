@@ -14,32 +14,16 @@ class CameraServices{
     }
 
     Delete(id){
-        Camera.findByIdAndDelete(id).then(()=>{
-            console.log("Camera " + id + " deletada com sucesso");
-        }).catch(err =>{
-            console.log(err);
-        });
+       return Camera.findByIdAndDelete(id)
     }
 
-    Create(cameraStatus, cameraLocation, cameraDescription){
-        const newCamera = new Camera({
-            cameraStatus: cameraStatus,
-            cameraLocation: cameraLocation,
-            cameraDescription: cameraDescription
-        });
-        newCamera.save();
+    Create(data){
+        const newCamera = new Camera(data);
+        return newCamera.save();
     }
 
-    Update(id, cameraStatus, cameraLocation, cameraDescription){
-        Camera.findByIdAndUpdate(id, {
-            cameraStatus: cameraStatus,
-            cameraLocation: cameraLocation,
-            cameraDescription: cameraDescription
-        }).then(()=>{
-            console.log("Dados da camera " + cameraLocation + " atualizados com sucesso");
-        }).catch(err =>{
-            console.log(err);
-        });
+    Update(id, data){
+        return Camera.findByIdAndUpdate(id, data)
     }
 
 }
