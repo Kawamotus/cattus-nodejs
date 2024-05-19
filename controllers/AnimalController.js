@@ -3,6 +3,9 @@ import middlewares from "../middlewares/middlewares.js"
 
 import AnimalServices from "../services/AnimalServices.js";
 import Animal from "../models/animal.js"
+import ActivityServices from "../services/ActivityServices.js";
+
+import PdfPrinter from "pdfmake"
 
 const router = express.Router();
 
@@ -90,5 +93,93 @@ router.post("/update/:animal_id", (req, res) => {
         });
     })
 });
+
+router.get("/show", (req, res) => {
+    const operation = ActivityServices.SelectAllNoCriteria()
+
+    operation.then(result => {
+        res.send({
+            ok: true,
+            result
+        });
+    }).catch(error => {
+        console.log(error);
+        res.send({
+            message: "Erro ao listar animais.",
+        });
+    })
+})
+
+
+router.get("/report", (req,res) => {
+
+    const operation = ActivityServices.SelectAllNoCriteria()
+    const body = []
+
+    operation.then(result => {
+        const activities = result;
+    
+        if (!Array.isArray(activities)) {
+            throw new Error("A resposta da API não contém um array de atividades.");
+        }
+        
+        for (let activity of activities) {
+            const rows = []
+            // rows.push(activity.activityAuthor.petName)
+            rows.push(activity.activtyData.activityName)
+            rows.push(activity.activtyData.activityStart)
+            rows.push(activity.activtyData.activityEnd)
+        
+            body.push(rows)
+        }
+        // console.log(body)
+        // res.send({body})
+    }).catch(error => {
+        console.log(error);
+        res.send({
+            message: "Erro ao listar atividades.",
+        });
+    })
+
+    var fonts = {
+        Helvetica: {
+            normal: 'Helvetica',
+            bold: 'Helvetica-Bold',
+            italics: 'Helvetica-Oblique',
+            bolditalics: 'Helvetica-BoldOblique'
+          }
+    }
+
+    const printer = new PdfPrinter(fonts)
+
+    const docDefinition = {
+        defaultStyle: {font: "Helvetica"},
+        content: [
+            {
+                table: {
+                    body: [
+                        ["Autor", "Atividade", "Início", "Término"],
+                        ...body  
+                    ]
+            }}
+        ]
+    }
+
+    const pdfDoc = printer.createPdfKitDocument(docDefinition)
+    
+    const chunks = []
+
+    pdfDoc.on("data", (chunk) => {
+        chunks.push(chunk)
+    })
+
+    pdfDoc.end()
+
+    pdfDoc.on("end", () => {
+        const result = Buffer.concat(chunks)
+        res.end(result)
+    })
+    
+})
 
 export default router;

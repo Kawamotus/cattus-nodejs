@@ -9,6 +9,10 @@ class ActivityServices{
         return Activity.find({activityAuthor: id}).populate("activityAuthor");
     }
 
+    SelectAllNoCriteria(){
+        return Activity.find().populate("activityAuthor");
+    }
+
     SelectOne(id){
         return Activity.findById(id).populate("activityAuthor");
     }
