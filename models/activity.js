@@ -6,7 +6,7 @@ const activity = new mongoose.Schema({
         ref: 'Animal', //_id do bicho
         require: true
     }, 
-    activtyData: {
+    activityData: {
         activityName: String,
         activityStart: Date,
         activityEnd: Date

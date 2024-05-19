@@ -94,8 +94,9 @@ router.post("/update/:animal_id", (req, res) => {
     })
 });
 
-router.get("/show", (req, res) => {
-    const operation = ActivityServices.SelectAllNoCriteria()
+router.get("/show/:author_id", (req, res) => {
+
+    const operation = ActivityServices.SelectAll(req.params.author_id)
 
     operation.then(result => {
         res.send({
@@ -105,41 +106,36 @@ router.get("/show", (req, res) => {
     }).catch(error => {
         console.log(error);
         res.send({
-            message: "Erro ao listar animais.",
+            message: "Erro ao listar atividades.",
         });
     })
 })
 
 
-router.get("/report", (req,res) => {
+router.get("/report/:author_id", async (req,res) => {
 
-    const operation = ActivityServices.SelectAllNoCriteria()
+    const activities = await ActivityServices.SelectAll(req.params.author_id)
+    const autor = await AnimalServices.SelectOne(req.params.author_id)
+
+    // res.send(activities)
+
     const body = []
 
-    operation.then(result => {
-        const activities = result;
+    if (!Array.isArray(activities)) {
+        throw new Error("A resposta da API não contém um array de atividades.");
+    }
     
-        if (!Array.isArray(activities)) {
-            throw new Error("A resposta da API não contém um array de atividades.");
-        }
-        
-        for (let activity of activities) {
+    for (let activity of activities) {
+        if (activity.activityData) {
             const rows = []
-            // rows.push(activity.activityAuthor.petName)
-            rows.push(activity.activtyData.activityName)
-            rows.push(activity.activtyData.activityStart)
-            rows.push(activity.activtyData.activityEnd)
+            rows.push(activity.activityAuthor.petName)
+            rows.push(activity.activityData.activityName)
+            rows.push(activity.activityData.activityStart.toUTCString())
+            rows.push(activity.activityData.activityEnd.toUTCString())
         
             body.push(rows)
         }
-        // console.log(body)
-        // res.send({body})
-    }).catch(error => {
-        console.log(error);
-        res.send({
-            message: "Erro ao listar atividades.",
-        });
-    })
+    }
 
     var fonts = {
         Helvetica: {
@@ -155,6 +151,8 @@ router.get("/report", (req,res) => {
     const docDefinition = {
         defaultStyle: {font: "Helvetica"},
         content: [
+        { text: `Animal: ${autor.petName}`},
+        { text: `Atividades: `},
             {
                 table: {
                     body: [
