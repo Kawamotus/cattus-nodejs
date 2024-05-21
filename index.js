@@ -8,6 +8,7 @@ import CompanyController from "./controllers/CompanyController.js";
 import EmployeeController from "./controllers/EmployeeController.js";
 import NotificationController from "./controllers/NotificationController.js";
 import StockController from "./controllers/StockController.js";
+import ReportController from "./controllers/reportController.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/company", CompanyController);
 app.use("/employee", EmployeeController);
 app.use("/notification", NotificationController);
 app.use("/stock", StockController);
+app.use("/report", ReportController);
 
 mongoose.connect("mongodb://localhost:27017/cattus-api");
 

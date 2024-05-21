@@ -17,7 +17,13 @@ const animal = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company', //id da empresa de origem do pet
         require: true
-    } 
+    },
+    petPicture: String,
+    petStatus: {
+        petCurrentStatus: String,
+        petCriticalQuantity: Number,
+        petLastOccurrence: Date
+    }
 });
 
 export default animal;
