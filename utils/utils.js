@@ -6,7 +6,7 @@ class Utils {
             id: employee._id,
             name: employee.employeeName,
             company: employee.company
-        }, "gatinhos", { expiresIn: 3600000 })
+        }, "gatinhos", { expiresIn: 3600 })
     }
 }
 
