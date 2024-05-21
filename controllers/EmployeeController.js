@@ -1,5 +1,7 @@
 import express from "express";
 import middlewares from "../middlewares/middlewares.js"
+import bcrypt from "bcrypt"
+import utils from "../utils/utils.js";
 
 import EmployeeServices from "../services/EmployeeServices.js";
 import Employee from "../models/employee.js";
@@ -90,5 +92,25 @@ router.post("/update/:employee_id", (req, res) => {
         });
     })
 });
+
+router.post("/login", async (req, res) => {
+    const {employeeEmail, employeePassword} = req.body
+
+    const checkUserExists = await EmployeeServices.SelectOneByEmail(employeeEmail)
+    if(!checkUserExists) {
+        return res.status(400).send({message:'Usuário não encontrado.'})
+    }
+
+    if(!await bcrypt.compare(employeePassword, checkUserExists.employeePassword)) {
+        return res.status(400).send({message:'Senha inválida.'})
+    }
+
+    res.send({
+        ok: true,
+        message: "Usuário autenticado com sucesso.",
+        token: utils.generateToken(checkUserExists)
+    })
+
+})
 
 export default router;
