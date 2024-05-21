@@ -20,9 +20,9 @@ const animal = new mongoose.Schema({
     },
     petPicture: String,
     petStatus: {
-        petCurrentStatus: String,
-        petCriticalQuantity: Number,
-        petLastOccurrence: Date
+        petCurrentStatus: String, // Normal, alerta, agravante (critical)
+        petOccurrencesQuantity: Number, // Qtde de vezes que o pet teve nível agravante
+        petLastOccurrence: Date // Ultima ocorrencia do nivel agravante
     }
 });
 
