@@ -9,6 +9,10 @@ class AnimalServices{
         return Animal.find({company: company}).populate("company")
     }
 
+    SelectAllByFields(company, filter) {
+        return Animal.find({company: company}).find(filter)
+    }
+
     SelectOne(id){
         return Animal.findById(id).populate("company");
     }

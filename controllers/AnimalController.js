@@ -1,5 +1,6 @@
 import express from "express";
 import middlewares from "../middlewares/middlewares.js"
+import utils from "../utils/utils.js";
 
 import AnimalServices from "../services/AnimalServices.js";
 import Animal from "../models/animal.js"
@@ -54,6 +55,22 @@ router.get("/select-one/:animal_id", (req, res) => {
             message: "Erro ao listar o animal.",
         });
     })
+})
+
+router.post("/search", async (req, res) => {
+    const query = req.body.query
+    const fields = req.body.fields
+
+    const company = req.session.user.company._id
+
+    try {
+        const searchQuery = utils.generateSearchQuery(query, fields)
+        const operation = await AnimalServices.SelectAllByFields(company, searchQuery)
+        res.send(operation)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({message: "Erro interno no servidor."})
+    }
 })
 
 router.get("/delete/:animal_id", (req, res) => {
