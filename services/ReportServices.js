@@ -10,17 +10,15 @@ class ActivityServices{
         }
         
         for (let activity of activities) {
+            if (activity.activityData) {
                 const rows = []
                 rows.push(activity.activityData.activityName)
                 rows.push(`${activity.activityData.activityStart.toJSON().slice(0,10)} / ${activity.activityData.activityStart.toJSON().slice(11,19)}`)
-                rows.push(`${activity.activityData.activityStart.toJSON().slice(0,10)} / ${activity.activityData.activityStart.toJSON().slice(11,19)}`)
+                rows.push(`${activity.activityData.activityEnd.toJSON().slice(0,10)} / ${activity.activityData.activityEnd.toJSON().slice(11,19)}`)
             
                 body.push(rows)
+            }
         }
-    
-        let repDateTime = new Date().toJSON()
-        let repDate = repDateTime.slice(0, 10)
-        let repTime = repDateTime.slice(11, 19)
     
         var fonts = {
             Helvetica: {
@@ -107,7 +105,8 @@ class ActivityServices{
     
 // ATIVIDADES
             { text: "\n\n Atividades na última semana: \n\n", style:"SectionTitle"},
-                {
+            (body.length === 0) ? [{text: "Não há atividades registradas", marginTop: 10}] : [ 
+            {
                     table: {
                         body: [
                             [
@@ -117,11 +116,9 @@ class ActivityServices{
                             ],
                             ...body  
                         ]
-                },
+                }, 
                     layout: 'Layout1', 
-                },
-                
-    
+                },   
                 { text: "\n\n Alimentação: \n\n", style:"SectionTitle", pageBreak: 'before'},
                     "Grafico 1",
     
@@ -133,8 +130,9 @@ class ActivityServices{
     
                 { text: "\n\n Excreção / Defecação: \n\n", style:"SectionTitle"},
                     "Grafico 4",
+                ]
             ],
-    
+
 // CABEÇALHO
             header: function() {
                 return [
@@ -166,11 +164,10 @@ class ActivityServices{
                                 width: 50,
                                 margin: [22, 3]
                             },
-                            {text: `${repDate} / ${repTime}`, margin: [22, 6]}
+                            {text: `${new Date().toJSON().slice(0, 10)} / ${new Date().toJSON().slice(11, 19)}`, margin: [22, 6]}
                             ]
                         ]
-                    },
-                    
+                    },       
                 }
         
               return t
@@ -205,7 +202,7 @@ class ActivityServices{
                 }
         }
     }
-    
+  
         const pdfDoc = printer.createPdfKitDocument(docDefinition, {tableLayouts: myTableLayouts})
         return pdfDoc;
     }   

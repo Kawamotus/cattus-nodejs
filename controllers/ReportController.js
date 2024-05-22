@@ -14,18 +14,10 @@ router.get("/animal/:animal_id", async (req,res) => {
 
         const pdf = ReportServices.ReportSingleAnimal(act, aut)
 
-        const chunks = []
-    
-        pdf.on("data", (chunk) => {
-            chunks.push(chunk)
-        })
-     
+        res.setHeader('Content-type', 'application/pdf');
+        res.setHeader('Content-disposition', 'inline; filename="relatorio-cattus.pdf"');
+        pdf.pipe(res);
         pdf.end()
-    
-        pdf.on("end", () => {
-            const result = Buffer.concat(chunks)
-            res.end(result)
-        })
     } catch(error) {
         console.log(error)
         res.status(500).json({error : 'Erro interno do servidor.'})
