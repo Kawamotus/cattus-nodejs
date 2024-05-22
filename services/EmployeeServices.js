@@ -13,6 +13,10 @@ class EmployeeServices{
         return Employee.findById(id).populate("company");
     }
 
+    SelectOneByEmail(email) {
+        return Employee.findOne({employeeEmail: email}).populate("company");
+    }
+
     Create(data){
         const newUser = new Employee(data);
         return newUser.save();
