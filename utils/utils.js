@@ -8,6 +8,14 @@ class Utils {
             company: employee.company
         }, "gatinhos", { expiresIn: 3600 })
     }
+
+    generateSearchQuery(query, fields) {
+        return {
+            $or: fields.map(field => ({
+                [field]: { $regex: query, $options: 'i' }
+            }))
+        };
+    };
 }
 
 export default new Utils();
