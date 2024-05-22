@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 const company = new mongoose.Schema({
-    companyCNPJ: String, //number?
+    companyCNPJ: String, 
     companyName: String,
     companyDetails: {
         companyLogo: String,
-        companyColor: String
-        //algo mais?
+        companyColor: String,
+        companyPhone: Number
     }
 });
 
