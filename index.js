@@ -1,5 +1,7 @@
 import express from "express";
+import session from "express-session";
 import mongoose from "mongoose";
+import middlewares from "./middlewares/middlewares.js";
 
 import ActivityController from "./controllers/ActivityController.js";
 import AnimalController from "./controllers/AnimalController.js";
@@ -13,6 +15,23 @@ const app = express();
 
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
+app.use(session({
+    secret: 'gatinhos',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 3600000, 
+        secure: false 
+    }
+}));
+
+const openRoutes = ['/employee/login', '/employee/create', '/employee/logout'];
+app.use((req, res, next) => {
+    if (openRoutes.includes(req.path)) {
+      return next();
+    }    
+    middlewares.authenticate(req, res, next)
+});
 
 app.use("/activity", ActivityController);
 app.use("/animal", AnimalController);
@@ -23,10 +42,6 @@ app.use("/notification", NotificationController);
 app.use("/stock", StockController);
 
 mongoose.connect("mongodb://localhost:27017/cattus-api");
-
-app.get("/", (req, res) =>{
-    res.send("Oi Mundo");
-});
 
 app.listen(8080, function (erro){
     if(erro){
