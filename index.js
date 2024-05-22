@@ -1,6 +1,7 @@
 import express from "express";
 import session from "express-session";
 import mongoose from "mongoose";
+import cors from "cors"
 import middlewares from "./middlewares/middlewares.js";
 
 import ActivityController from "./controllers/ActivityController.js";
@@ -14,6 +15,7 @@ import ReportController from "./controllers/reportController.js";
 
 const app = express();
 
+app.use(cors());
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(session({
