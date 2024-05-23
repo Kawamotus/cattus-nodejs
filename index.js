@@ -12,6 +12,7 @@ import EmployeeController from "./controllers/EmployeeController.js";
 import NotificationController from "./controllers/NotificationController.js";
 import StockController from "./controllers/StockController.js";
 import ReportController from "./controllers/reportController.js";
+import RotationController from "./controllers/RotationController.js";
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
     middlewares.authenticate(req, res, next)
 });
 
+
 app.use("/activity", ActivityController);
 app.use("/animal", AnimalController);
 app.use("/camera", CameraController);
@@ -44,6 +46,7 @@ app.use("/employee", EmployeeController);
 app.use("/notification", NotificationController);
 app.use("/stock", StockController);
 app.use("/report", ReportController);
+app.use("/rotate", RotationController);
 
 mongoose.connect("mongodb://localhost:27017/cattus-api");
 

@@ -1,6 +1,6 @@
 import PdfPrinter from "pdfmake"
 
-class ActivityServices{
+class ReportServices{
     
     ReportSingleAnimal(activities, author){
         const body = []
@@ -208,4 +208,4 @@ class ActivityServices{
     }   
 }
     
-export default new ActivityServices();
+export default new ReportServices();
