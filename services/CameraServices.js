@@ -13,6 +13,10 @@ class CameraServices{
         return Camera.findOne({_id: id});
     }
 
+    SelectAllByFields(company, filter) {
+        return Camera.find({company: company}).find(filter)
+    }
+
     Delete(id){
        return Camera.findByIdAndDelete(id)
     }
