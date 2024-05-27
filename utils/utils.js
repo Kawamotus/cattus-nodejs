@@ -1,4 +1,17 @@
 import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
+import AWS from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+dotenv.config()
+
+const s3 = new AWS.S3Client({
+    credentials: {
+        accessKeyId: process.env.ACCESS_KEY,
+        secretAccessKey: process.env.SECRET_ACCESS_KEY,
+    },
+    region: process.env.BUCKET_REGION
+})
 
 class Utils {
     generateToken(employee) {
@@ -21,6 +34,30 @@ class Utils {
             })
         };
     };
+
+    uploadPicture(file, file_name) {
+        const params = {
+            Bucket: process.env.BUCKET_NAME,
+            Key: file_name,
+            Body: file.buffer,
+            ContentType: file.mimetype
+        }
+
+        const command = new AWS.PutObjectCommand(params)
+
+        return s3.send(command)        
+    }
+
+    getUploadedPicture(file_name) {
+        const params = {
+            Bucket: process.env.BUCKET_NAME,
+            Key: file_name
+        }
+
+        const commandUrl = new AWS.GetObjectCommand(params)
+
+        return getSignedUrl(s3, commandUrl)
+    }
 }
 
 export default new Utils();
