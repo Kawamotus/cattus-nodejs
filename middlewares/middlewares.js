@@ -2,10 +2,10 @@ import jwt from "jsonwebtoken"
 
 class Middlewares {
     checkNecessaryFields(model) {
-        return function(req, res, next) {
-            const data = JSON.stringify(req.body);
-            const baseModel = Object.keys(model.paths).slice(0, -2);
-    
+      return function (req, res, next) {
+        const data = JSON.stringify(req.body);
+            const baseModel = Object.keys(model.paths).slice(0, -2);        
+        
             let errorsList = []
             for (const field of baseModel) {
                 const splitedField = field.split(".")
@@ -13,7 +13,8 @@ class Middlewares {
                     if (!data.includes(splitedField[1])) {
                         errorsList.push(`Campo '${splitedField[1]}' é necessário.`)
                     }
-                } else if (!data.includes(field)){
+                } else if (!data.includes(field)) {
+                    if(field == "employeePicture" && req.file) continue
                     errorsList.push(`Campo '${field}' é necessário.`)
                 }
             }
