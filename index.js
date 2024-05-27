@@ -37,7 +37,6 @@ app.use((req, res, next) => {
     middlewares.authenticate(req, res, next)
 });
 
-
 app.use("/activity", ActivityController);
 app.use("/animal", AnimalController);
 app.use("/camera", CameraController);
@@ -47,6 +46,10 @@ app.use("/notification", NotificationController);
 app.use("/stock", StockController);
 app.use("/report", ReportController);
 app.use("/rotate", RotationController);
+
+app.get("/", (req, res) => {
+    res.send(req.session.user)
+})
 
 mongoose.connect("mongodb://localhost:27017/cattus-api");
 
