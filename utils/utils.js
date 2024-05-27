@@ -45,7 +45,7 @@ class Utils {
 
         const command = new AWS.PutObjectCommand(params)
 
-        return s3.send(command)        
+        return s3.send(command)
     }
 
     getUploadedPicture(file_name) {
@@ -58,6 +58,17 @@ class Utils {
 
         return getSignedUrl(s3, commandUrl)
     }
+
+    unFlatten(data) {
+        const result = {};
+        for (const i in data) {
+          const keys = i.split('.');
+          keys.reduce((acc, key, index) => {
+            return acc[key] = acc[key] || (index === keys.length - 1 ? data[i] : {});
+          }, result);
+        }
+        return result;
+      };
 }
 
 export default new Utils();
