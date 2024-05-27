@@ -2,28 +2,47 @@ import express from "express";
 import middlewares from "../middlewares/middlewares.js"
 import bcrypt from "bcrypt"
 import utils from "../utils/utils.js";
+import multer from "multer"
 
 import EmployeeServices from "../services/EmployeeServices.js";
 import Employee from "../models/employee.js";
 
 const router = express.Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-router.post("/create", middlewares.checkNecessaryFields(Employee), (req, res) => {
-    const data = req.body
 
-    const operation = EmployeeServices.Create(data)
-    operation.then(result => {
-        res.status(201).send({
-            ok: true,
-            message: "Usuário cadastrado com sucesso.",
-            _id: result._id
-        });
-    }).catch(error => {
+router.post("/create", upload.single('employeePicture'), middlewares.checkNecessaryFields(Employee), async (req, res) => {
+    const file = req.file;
+    const uniqueFileName = `${Date.now()}_${file.originalname}`
+    
+    try {
+        await utils.uploadPicture(file, uniqueFileName)  
+        const uploadedProfilePicture = await utils.getUploadedPicture(uniqueFileName)
+
+        const data = req.body
+        try {
+            const operation = await EmployeeServices.Create({ employeePicture: uploadedProfilePicture, ...data })
+            
+            res.status(201).send({
+                ok: true,
+                message: "Usuário cadastrado com sucesso.",
+                _id: operation._id
+            });
+            
+        } catch (error) {
+            console.log(error);
+            res.status(400).send({
+                message: "Erro ao cadastrar usuário.",
+            });
+        }
+
+
+    } catch (error) {
         console.log(error);
-        res.status(400).send({
-            message: "Erro ao cadastrar usuário.",
-        });
-    })
+        res.status(500).send({message: "Erro interno no servidor"})
+    }
+
 });
 
 router.get("/select-all", (req, res) => {
@@ -93,20 +112,20 @@ router.post("/update/:employee_id", (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-    const {employeeEmail, employeePassword} = req.body
+    const { employeeEmail, employeePassword } = req.body
 
     try {
         const checkUserExists = await EmployeeServices.SelectOneByEmail(employeeEmail)
 
-        if(!checkUserExists) {
-            return res.status(401).send({message:'Usuário não encontrado.'})
+        if (!checkUserExists) {
+            return res.status(401).send({ message: 'Usuário não encontrado.' })
         }
-    
-        if(!await bcrypt.compare(employeePassword, checkUserExists.employeePassword)) {
-            return res.status(401).send({message:'Senha inválida.'})
-        }        
 
-        
+        if (!await bcrypt.compare(employeePassword, checkUserExists.employeePassword)) {
+            return res.status(401).send({ message: 'Senha inválida.' })
+        }
+
+
         res.send({
             ok: true,
             message: "Usuário autenticado com sucesso.",
@@ -115,16 +134,16 @@ router.post("/login", async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({message: "Erro interno ao tentar logar."})
+        return res.status(500).send({ message: "Erro interno ao tentar logar." })
     }
 })
 
 router.get('/logout', (req, res) => {
     req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).send({message: 'Erro interno ao tentar deslogar.'});
-      }
-      res.send({message: 'Usuário deslogado com sucesso.'});
+        if (err) {
+            return res.status(500).send({ message: 'Erro interno ao tentar deslogar.' });
+        }
+        res.send({ message: 'Usuário deslogado com sucesso.' });
     });
 });
 
