@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const company = new mongoose.Schema({
-    companyCNPJ: String, 
+    companyCNPJ: String,
     companyName: String,
+    companyLogo: String,
     companyDetails: {
-        companyLogo: String,
         companyColor: String,
         companyPhone: Number
     }
