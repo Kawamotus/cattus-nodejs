@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 import AWS from "@aws-sdk/client-s3"
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 dotenv.config()
 
@@ -49,14 +48,7 @@ class Utils {
     }
 
     getUploadedPicture(file_name) {
-        const params = {
-            Bucket: process.env.BUCKET_NAME,
-            Key: file_name
-        }
-
-        const commandUrl = new AWS.GetObjectCommand(params)
-
-        return getSignedUrl(s3, commandUrl)
+        return `${process.env.BUCKET_OBJECT_URL}/${file_name}`
     }
 
     unFlatten(data) {

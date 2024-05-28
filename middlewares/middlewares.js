@@ -18,7 +18,7 @@ class Middlewares {
                         field == "petPicture" ||
                         field == "companyLogo" ||
                         field == "petVaccCard")
-                    && req.files) continue
+                    && (req.files || req.file)) continue
                     errorsList.push(`Campo '${field}' é necessário.`)
                 }
             }
