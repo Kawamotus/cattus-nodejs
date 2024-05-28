@@ -98,7 +98,7 @@ router.post("/search", async (req, res) => {
     }
 })
 
-router.get("/delete/:animal_id", (req, res) => {
+router.delete("/delete/:animal_id", (req, res) => {
     const operation = AnimalServices.Delete(req.params.animal_id)
     operation.then(result => {
         res.status(204).send({
@@ -112,7 +112,7 @@ router.get("/delete/:animal_id", (req, res) => {
     })
 })
 
-router.post("/update/:animal_id", (req, res) => {
+router.patch("/update/:animal_id", (req, res) => {
     const id = req.params.animal_id
     const data = req.body
 
