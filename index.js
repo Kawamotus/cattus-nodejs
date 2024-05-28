@@ -29,13 +29,13 @@ app.use(session({
     }
 }));
 
-// const openRoutes = ['/employee/login', '/employee/create', '/employee/logout'];
-// app.use((req, res, next) => {
-//     if (openRoutes.includes(req.path)) {
-//       return next();
-//     }    
-//     middlewares.authenticate(req, res, next)
-// });
+const openRoutes = ['/employee/login', '/employee/logout'];
+app.use((req, res, next) => {
+    if (openRoutes.includes(req.path)) {
+      return next();
+    }    
+    middlewares.authenticate(req, res, next)
+});
 
 app.use("/activity", ActivityController);
 app.use("/animal", AnimalController);
