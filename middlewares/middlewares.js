@@ -14,7 +14,11 @@ class Middlewares {
                         errorsList.push(`Campo '${splitedField[1]}' é necessário.`)
                     }
                 } else if (!data.includes(field)) {
-                    if(field == "employeePicture" && req.file) continue
+                  if ((field == "employeePicture" ||
+                        field == "petPicture" ||
+                        field == "companyLogo" ||
+                        field == "petVaccCard")
+                    && req.files) continue
                     errorsList.push(`Campo '${field}' é necessário.`)
                 }
             }
