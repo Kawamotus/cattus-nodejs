@@ -77,7 +77,7 @@ router.get("/select-one/:employee_id", (req, res) => {
     })
 })
 
-router.get("/delete/:employee_id", (req, res) => {
+router.delete("/delete/:employee_id", (req, res) => {
     const operation = EmployeeServices.Delete(req.params.employee_id)
 
     operation.then(result => {
@@ -93,7 +93,7 @@ router.get("/delete/:employee_id", (req, res) => {
     })
 })
 
-router.post("/update/:employee_id", (req, res) => {
+router.patch("/update/:employee_id", (req, res) => {
     const id = req.params.employee_id
     const data = req.body
 

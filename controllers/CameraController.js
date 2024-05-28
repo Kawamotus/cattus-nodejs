@@ -57,7 +57,7 @@ router.get("/select-one/:camera_id", (req, res) => {
     })
 })
 
-router.get("/delete/:camera_id", (req, res) => {
+router.delete("/delete/:camera_id", (req, res) => {
     const operation = CameraServices.Delete(req.params.camera_id)
 
     operation.then(result => {
@@ -80,10 +80,13 @@ router.post("/search", async (req, res) => {
     try {
         const searchQuery = utils.generateSearchQuery(query, fields)
         const operation = await CameraServices.SelectAllByFields(company, searchQuery)
-        res.send(operation)
+        res.send({
+            ok: true,
+            operation
+        })
     } catch (error) {
         console.log(error);
-        res.status(500).send({message: "Erro interno no servidor."})
+        res.status(500).send({ message: "Erro interno no servidor." })
     }
 })
 

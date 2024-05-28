@@ -50,23 +50,22 @@ router.get("/select-one/:notification_id", (req, res) => {
         });
     }).catch(error => {
         console.log(error);
-        res.send({
+        res.status(400).send({
             message: "Erro ao listar as notificação.",
         });
     })
 })
 
-router.get("/delete/:notification_id", (req, res) => {
+router.delete("/delete/:notification_id", (req, res) => {
     const operation = NotificationService.Delete(req.params.notification_id)
 
     operation.then(result => {
-        res.send({
+        res.status(204).send({
             ok: true,
-            result
         });
     }).catch(error => {
         console.log(error);
-        res.send({
+        res.status(400).send({
             message: "Erro ao deletar a notificação.",
         });
     })

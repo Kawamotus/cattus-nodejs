@@ -11,14 +11,14 @@ router.post("/create", middlewares.checkNecessaryFields(Activity), (req, res) =>
 
     const operation = ActivityServices.Create(data)
     operation.then(result => {
-        res.send({
+        res.status(201).send({
             ok: true,
             message: "Atividade registrada com sucesso.",
             _id: result._id
         });
     }).catch(error => {
         console.log(error);
-        res.send({
+        res.status(400).send({
             message: "Erro ao registrar atividade.",
         });
     })
@@ -34,7 +34,7 @@ router.get("/select-all/:author_id", (req, res) => {
         });
     }).catch(error => {
         console.log(error);
-        res.send({
+        res.status(400).send({
             message: "Erro ao listar as atividades.",
         });
     })
@@ -50,23 +50,22 @@ router.get("/select-one/:activity_id", (req, res) => {
         });
     }).catch(error => {
         console.log(error);
-        res.send({
+        res.status(400).send({
             message: "Erro ao listar a atividade.",
         });
     })
 })
 
-router.get("/delete/:activity_id", (req, res) => {
+router.delete("/delete/:activity_id", (req, res) => {
     const operation = ActivityServices.Delete(req.params.activity_id)
 
     operation.then(result => {
-        res.send({
+        res.status(204).send({
             ok: true,
-            result
         });
     }).catch(error => {
         console.log(error);
-        res.send({
+        res.status(400).send({
             message: "Erro ao deletar a atividade.",
         });
     })
