@@ -11,16 +11,25 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-router.post("/create", upload.single('petPicture'), middlewares.checkNecessaryFields(Animal), async (req, res) => {
-    const file = req.file;
-    const uniqueFileName = `${Date.now()}_${file.originalname}`
-    try {
-        await utils.uploadPicture(file, uniqueFileName)
-        const uploadedProfilePicture = await utils.getUploadedPicture(uniqueFileName)
+router.post("/create", upload.fields([{ name: 'petPicture', maxCount: 1 }, { name: 'petVaccCard', maxCount: 1 }]), middlewares.checkNecessaryFields(Animal), async (req, res) => {
+    const [filesPetVaccCard] = req.files.petVaccCard
+    const [filesPetPicture] = req.files.petPicture
 
-        const data = utils.unFlatten(req.body) 
+    const petPicture = `${Date.now()}_${filesPetPicture.originalname}`
+    const petVaccCard = `${Date.now()}_${filesPetVaccCard.originalname}`
+    try {
+        await utils.uploadPicture(filesPetPicture, petPicture)
+        await utils.uploadPicture(filesPetVaccCard, petVaccCard)
+
+        const petPictureUrl = await utils.getUploadedPicture(petPicture)
+        const petVaccCardUrl = await utils.getUploadedPicture(petVaccCard)
+
+        const data = utils.unFlatten(req.body)
         try {
-            const operation = await AnimalServices.Create({ petPicture: uploadedProfilePicture, ...data })
+            const operation = await AnimalServices.Create({ 
+                petPicture: petPictureUrl,
+                petVaccCard: petVaccCardUrl,
+                ...data })
 
             res.status(201).send({
                 ok: true,
