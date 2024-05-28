@@ -17,6 +17,7 @@ class Utils {
         return jwt.sign({
             id: employee._id,
             name: employee.employeeName,
+            picture: employee.employeePicture,
             company: employee.company._id
         }, "gatinhos", { expiresIn: 3600 })
     }
