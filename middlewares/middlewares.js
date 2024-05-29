@@ -39,7 +39,7 @@ class Middlewares {
         jwt.verify(authHeader, "gatinhos", (err, decoded) => {
             if(err){
                 console.log(err);                
-                return res.status(500).send({message: 'Erro ao autenticar o token'})    
+                return res.status(500).send({logout: true, message: 'Erro ao autenticar o token'})    
             }
             
             req.session.user = decoded
