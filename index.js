@@ -29,7 +29,7 @@ app.use(session({
     }
 }));
 
-const openRoutes = ['/employee/login', '/employee/create', '/employee/logout'];
+const openRoutes = ['/employee/login', '/employee/logout'];
 app.use((req, res, next) => {
     if (openRoutes.includes(req.path)) {
       return next();
