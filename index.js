@@ -3,6 +3,7 @@ import session from "express-session";
 import mongoose from "mongoose";
 import cors from "cors"
 import middlewares from "./middlewares/middlewares.js";
+import dotenv from "dotenv"
 
 import ActivityController from "./controllers/ActivityController.js";
 import AnimalController from "./controllers/AnimalController.js";
@@ -14,26 +15,27 @@ import StockController from "./controllers/StockController.js";
 import ReportController from "./controllers/reportController.js";
 import RotationController from "./controllers/RotationController.js";
 
+dotenv.config();
 const app = express();
 
 app.use(cors());
-app.use(express.urlencoded({extended: false}))
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(session({
     secret: 'gatinhos',
     resave: false,
     saveUninitialized: true,
     cookie: {
-        maxAge: 3600000, 
-        secure: false 
+        maxAge: 3600000,
+        secure: false
     }
 }));
 
 const openRoutes = ['/employee/login', '/employee/logout'];
 app.use((req, res, next) => {
     if (openRoutes.includes(req.path)) {
-      return next();
-    }    
+        return next();
+    }
     middlewares.authenticate(req, res, next)
 });
 
@@ -51,13 +53,19 @@ app.get("/", (req, res) => {
     res.send(req.session.user)
 })
 
-mongoose.connect("mongodb://localhost:27017/cattus-api");
+mongoose.connect(process.env.DATABASE_URL);
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Erro na conexão ao MongoDB:'));
+db.once('open', () => {
+    console.log('Conectado ao MongoDB');
+});
 
-app.listen(8080, function (erro){
-    if(erro){
+
+app.listen(8080, function (erro) {
+    if (erro) {
         console.log("Erro " + erro)
     }
-    else{
+    else {
         console.log("Servidor iniciado: http://localhost:8080")
     }
 })
