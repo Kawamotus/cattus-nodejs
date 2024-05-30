@@ -11,8 +11,7 @@ router.post("/create", middlewares.checkNecessaryFields(Stock), (req, res) => {
     operation.then(result => {
         res.status(201).send({
             ok: true,
-            message: "Item cadastrado com sucesso.",
-            _id: result
+            message: "Item cadastrado com sucesso."
         });
     }).catch(error => {
         console.log(error);

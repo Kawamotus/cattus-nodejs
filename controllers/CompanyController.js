@@ -18,7 +18,7 @@ router.post("/create", upload.single('companyLogo'), middlewares.checkNecessaryF
         await utils.uploadPicture(file, uniqueFileName)
         const uploadedCompanyLogo = await utils.getUploadedPicture(uniqueFileName)
 
-        const data = req.body
+        const data = utils.unFlatten(req.body)
         try {
             const operation = await CompanyServices.Create({ companyLogo: uploadedCompanyLogo, ...data })
 
