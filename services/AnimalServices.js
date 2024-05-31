@@ -5,8 +5,8 @@ const Animal = mongoose.model("Animal", animal);
 
 class AnimalServices{
 
-    SelectAll(company){
-        return Animal.find({company: company}).populate("company")
+    SelectAll(company, skip = 0, limit = 10){
+        return Animal.find({company: company}).populate("company").skip(skip).limit(limit)
     }
 
     SelectAllByFields(company, filter) {

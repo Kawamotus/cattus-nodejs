@@ -52,7 +52,7 @@ router.post("/create", upload.fields([{ name: 'petPicture', maxCount: 1 }, { nam
 });
 
 router.get("/select-all/:company_id", (req, res) => {
-    const operation = AnimalServices.SelectAll(req.params.company_id)
+    const operation = AnimalServices.SelectAll(req.params.company_id, req.query.skip, req.query.limit)
 
     operation.then(result => {
         res.send({
