@@ -1,9 +1,8 @@
-import express from "express";
-import session from "express-session";
-import mongoose from "mongoose";
-import cors from "cors"
-import middlewares from "./middlewares/middlewares.js";
-import dotenv from "dotenv"
+import app from "./config/server.js"
+import database from "./config/database.js";
+import http from "http"
+import { Server } from "socket.io";
+import socketHandlers from "./config/socketHandlers.js";
 
 import ActivityController from "./controllers/ActivityController.js";
 import AnimalController from "./controllers/AnimalController.js";
@@ -15,29 +14,9 @@ import StockController from "./controllers/StockController.js";
 import ReportController from "./controllers/reportController.js";
 import RotationController from "./controllers/RotationController.js";
 
-dotenv.config();
-const app = express();
-
-app.use(cors());
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
-app.use(session({
-    secret: 'gatinhos',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        maxAge: 3600000,
-        secure: false
-    }
-}));
-
-const openRoutes = ['/employee/login', '/employee/logout'];
-app.use((req, res, next) => {
-    if (openRoutes.includes(req.path)) {
-        return next();
-    }
-    middlewares.authenticate(req, res, next)
-});
+app.get("/", (req, res) => {
+    res.send(req.session.user)
+})
 
 app.use("/activity", ActivityController);
 app.use("/animal", AnimalController);
@@ -49,23 +28,29 @@ app.use("/stock", StockController);
 app.use("/report", ReportController);
 app.use("/rotate", RotationController);
 
-app.get("/", (req, res) => {
-    res.send(req.session.user)
-})
+try {
+    const db = await database.connect()
+    const server = http.createServer(app)
+    const io = new Server({
+        cors: {
+            origin: "*"
+        },
+        ...server
+    })
+    server.listen(8080, () => console.log("Servidor rodando: http://localhost:8080"))
 
-mongoose.connect(process.env.DATABASE_URL);
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'Erro na conexão ao MongoDB:'));
-db.once('open', () => {
-    console.log('Conectado ao MongoDB');
-});
+    try {
+        io.listen(server)
+        io.on("connection", (socket) => {
+            console.log("Cattus WEB conectado.");
+            socketHandlers(db, socket)
+        });
 
-
-app.listen(8080, function (erro) {
-    if (erro) {
-        console.log("Erro " + erro)
+    } catch (error) {
+        console.log("Ocorreu um erro ao tentar iniciar o servidor WebSocket: " + error);
     }
-    else {
-        console.log("Servidor iniciado: http://localhost:8080")
-    }
-})
+
+} catch (error) {
+    console.log("Ocorreu um erro ao tentar iniciar o servidor: " + error)
+}
+
