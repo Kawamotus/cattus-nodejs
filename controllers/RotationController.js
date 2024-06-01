@@ -1,33 +1,21 @@
 import express from "express"
-import multer from "multer"
-import path from "path"
-import fs from "fs"
-
 import rotateImageLinear from "../services/RotationServices.js"
 
 const router = express.Router()
-const upload = multer({ dest: 'uploads/' })
 
-router.post("/", upload.single('image'), async (req, res) => {
+router.post("/", async (req, res) => {
     const angle = parseInt(req.body.angle)
-    if (!req.file)
-        return res.status(400).send('Arquivo da imagem não encontrado.')
-    
-    const inputPath = req.file.path;
-    const outputPath = path.join('uploads', `rotated_${req.file.originalname}`)
+    const img_url = req.body.img_url
+    if (!req.body.img_url)
+        return res.status(400).send('URL da imagem não encontrado.')
 
     try {
-        const rotatedImage = await rotateImageLinear(inputPath, angle)
-        await rotatedImage.toFile(outputPath);
+        const rotatedImage = await rotateImageLinear(img_url, angle)
+        if (!rotatedImage) res.status(400).send({ message: "Erro ao tentar rotacionar a imagem." })
 
-        res.sendFile(path.resolve(outputPath), (err) => {
-            if (err)
-                res.status(500).send('Erro ao enviar o arquivo.')
-            
-            fs.unlinkSync(inputPath); // Limpa o cache da imagem processada
-            fs.unlinkSync(outputPath);
-        })
+        res.send({ message: "Imagem rotacionada com sucesso.", url: rotatedImage })
     } catch (error) {
+        console.log(error);
         res.status(500).send('Erro ao processar a imagem.')
     }
 })

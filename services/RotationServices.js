@@ -1,9 +1,13 @@
 import sharp from "sharp"
+import utils from "../utils/utils.js"
+import { fileTypeFromBuffer } from "file-type"
 
-const imgLinearRotation = async (inputPath, angle) => {
-    const image = await sharp(inputPath).raw().toBuffer({ resolveWithObject: true })
+const imgLinearRotation = async (img_url, angle) => {
+    const imageDownloaded = await (await fetch(img_url)).arrayBuffer()
+
+    const image = await sharp(imageDownloaded).raw().toBuffer({ resolveWithObject: true })
     const { data, info } = image
-    
+
     const width = info.width
     const height = info.height
     const xcenter = width / 2
@@ -23,22 +27,32 @@ const imgLinearRotation = async (inputPath, angle) => {
             if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
                 const newIdx = (newY * width + newX) * 3;
                 const oldIdx = (y * width + x) * 3;
-                rotatedData[newIdx] = data[oldIdx];         
+                rotatedData[newIdx] = data[oldIdx];
                 rotatedData[newIdx + 1] = data[oldIdx + 1];
                 rotatedData[newIdx + 2] = data[oldIdx + 2]; // Realoca os pixels com sua nova posição no buffer
             }
         }
     }
+    {
+        const rotatedImage = await sharp(rotatedData, {
+            raw: {
+                width: width,
+                height: height,
+                channels: 3
+            }
+        }).png().toBuffer()
+        const type = await fileTypeFromBuffer(rotatedImage)
 
-    const rotatedImage = sharp(rotatedData, {
-        raw: {
-            width: width,
-            height: height,
-            channels: 3
+        const rotatedImageName = `rotated_${Date.now()}_${img_url.split("/")[3]}`
+        try {
+            await utils.uploadPicture({ buffer: rotatedImage, mimetype: type.mime }, rotatedImageName)
+
+            return utils.getUploadedPicture(rotatedImageName)
+        } catch (error) {
+            console.log("Erro ao fazer upload da imagem rotacionada: " + error);
         }
-    })
+    }
 
-    return rotatedImage
 }
 
 
