@@ -45,8 +45,8 @@ router.post("/create", upload.single('employeePicture'), middlewares.checkNecess
 
 });
 
-router.get("/select-all", (req, res) => {
-    const operation = EmployeeServices.SelectAll()
+router.get("/select-all/:id_company", (req, res) => {
+    const operation = EmployeeServices.SelectAll(req.params.id_company, req.query.skip, req.query.limit)
 
     operation.then(result => {
         res.send({

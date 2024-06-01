@@ -5,8 +5,8 @@ const Employee = mongoose.model("employee", employee);
 
 class EmployeeServices{
 
-    SelectAll(){
-        return Employee.find().populate("company");
+    SelectAll(id, skip = 0, limit = 10){
+        return Employee.find({company: id}).populate("company").skip(skip).limit(limit);
     }
 
     SelectOne(id){
