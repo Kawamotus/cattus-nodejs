@@ -11,7 +11,7 @@ import CompanyController from "./controllers/CompanyController.js";
 import EmployeeController from "./controllers/EmployeeController.js";
 import NotificationController from "./controllers/NotificationController.js";
 import StockController from "./controllers/StockController.js";
-import ReportController from "./controllers/reportController.js";
+import ReportController from "./controllers/ReportController.js";
 import RotationController from "./controllers/RotationController.js";
 
 app.get("/", (req, res) => {
