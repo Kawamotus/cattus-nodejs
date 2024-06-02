@@ -41,21 +41,24 @@ router.post("/create", upload.single('companyLogo'), middlewares.checkNecessaryF
     }
 });
 
-router.patch("/update/:company_id", (req, res) => {
+router.patch("/update/:company_id", async (req, res) => {
     const id = req.params.company_id
-    const operation = CompanyServices.Update(id, req.body)
-    operation.then(result => {
+    const data = req.body
+
+    try {
+        const updatedFields = utils.buildUpdateFields(data)
+        const operation = await CompanyServices.Update(id, updatedFields)
+
         res.send({
             ok: true,
             message: "Empresa atualizada com sucesso.",
-            _id: result._id
+            _id: operation._id
         });
-    }).catch(error => {
+
+    } catch (error) {
         console.log(error);
-        res.status(400).send({
-            message: "Erro ao atualizar empresa.",
-        });
-    })
+        res.status(400).send({ message: `Erro ao atualizar os dados do empresa.` })
+    }
 });
 
 router.get("/select-one/:company_id", (req, res) => {

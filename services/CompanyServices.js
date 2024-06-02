@@ -15,7 +15,7 @@ class CompanyServices{
     }
 
     Update(id, data){
-        return Company.findByIdAndUpdate(id, data)
+        return Company.findByIdAndUpdate(id, {$set: data})
     }
 
     //delete?

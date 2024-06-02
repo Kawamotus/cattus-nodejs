@@ -26,10 +26,11 @@ router.post("/create", upload.fields([{ name: 'petPicture', maxCount: 1 }, { nam
 
         const data = utils.unFlatten(req.body)
         try {
-            const operation = await AnimalServices.Create({ 
+            const operation = await AnimalServices.Create({
                 petPicture: petPictureUrl,
                 petVaccCard: petVaccCardUrl,
-                ...data })
+                ...data
+            })
 
             res.status(201).send({
                 ok: true,
@@ -112,23 +113,24 @@ router.delete("/delete/:animal_id", (req, res) => {
     })
 })
 
-router.patch("/update/:animal_id", (req, res) => {
+router.patch("/update/:animal_id", async (req, res) => {
     const id = req.params.animal_id
     const data = req.body
 
-    const operation = AnimalServices.Update(id, data)
-    operation.then(result => {
+    try {
+        const updatedFields = utils.buildUpdateFields(data)
+        const operation = await AnimalServices.Update(id, updatedFields)
+
         res.send({
             ok: true,
             message: "Animal atualizado com sucesso.",
-            _id: result._id
+            _id: operation._id
         });
-    }).catch(error => {
+
+    } catch (error) {
         console.log(error);
-        res.status(400).send({
-            message: "Erro ao atualizar os dados do animal.",
-        });
-    })
+        res.status(400).send({ message: `Erro ao atualizar os dados do animal.` })
+    }
 });
 
 export default router;

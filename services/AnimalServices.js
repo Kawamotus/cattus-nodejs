@@ -28,7 +28,7 @@ class AnimalServices{
     }
 
     Update(id, data){
-        return Animal.findByIdAndUpdate(id, data)
+        return Animal.findByIdAndUpdate(id, {$set: data})
     }
 }
 
