@@ -1,5 +1,8 @@
 import PdfPrinter from "pdfmake"
 import utils from "../utils/utils.js";
+import dotenv from "dotenv"
+
+dotenv.config()
 
 class ReportServices {
 
@@ -59,7 +62,7 @@ class ReportServices {
         }
 
         const petPicture = await utils.imageUrlToBase64(author.petPicture)
-        const cattusPicture = await utils.imageUrlToBase64(`https://${author.petPicture.split("/")[2]}/cattus.png`)
+        const cattusPicture = await utils.imageUrlToBase64(`${process.env.BUCKET_OBJECT_URL}/cattus.png`)
         const docDefinition = {
             defaultStyle: { font: "Helvetica" },
             content: [
