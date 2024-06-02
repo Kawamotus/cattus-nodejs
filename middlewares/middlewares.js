@@ -37,9 +37,11 @@ class Middlewares {
         }
 
         jwt.verify(authHeader, "gatinhos", (err, decoded) => {
-            if (err) {
+            if (err?.name == "TokenExpiredError") {
+                return res.status(401).send({ logout: true, message: 'Token expirado. Por favor, efetuar o login novamente.' })
+            } else if(err) {
                 console.log(err);
-                return res.status(500).send({ logout: true, message: 'Erro ao autenticar o token' })
+                return res.status(500).send({ message: "Erro interno na verificação do token." })
             }
 
             req.session.user = decoded
