@@ -3,24 +3,27 @@ import notification from "../models/notification.js";
 
 const Notification = mongoose.model("notification", notification);
 
-class NotificationServices{
+class NotificationServices {
 
-    SelectAll(id){
-        return Notification.find({notificationTarget: id}).populate("notificationOrigin").populate("notificationTarget");
+    SelectAll(id) {
+        return Notification.find({ notificationTarget: id }).populate("notificationOrigin").populate("notificationTarget");
     }
 
-    SelectOne(id){
+    SelectOne(id) {
         return Notification.findById(id).populate("notificationOrigin").populate("notificationTarget");
     }
 
-    Create(data){
+    Create(data) {
         const newNotification = new Notification(data)
         return newNotification.save()
     }
 
-    UpdateRead(id){
-        //retornar na "OnClick", se pah, quando o cliente clicar na notificacao e apos isso, enviar para detalhes, caso haja uma tela assim
-        return Notification.findByIdAndUpdate(id, {notificationStatus: true})
+    Delete(id){
+        return Notification.findByIdAndDelete(id)
+     }
+
+    UpdateRead(id) {
+        return Notification.findByIdAndUpdate(id, { notificationStatus: true })
     }
 
 }

@@ -72,6 +72,25 @@ router.delete("/delete/:camera_id", (req, res) => {
     })
 })
 
+router.patch("/update/:camera_id", (req, res) => {
+    const id = req.params.camera_id
+    const data = req.body
+
+    const operation = CameraServices.Update(id, data)
+    operation.then(result => {
+        res.send({
+            ok: true,
+            message: "Câmera atualizado com sucesso.",
+            _id: result._id
+        });
+    }).catch(error => {
+        console.log(error);
+        res.status(400).send({
+            message: "Erro ao atualizar os dados da Câmera.",
+        });
+    })
+});
+
 router.post("/search", async (req, res) => {
     const query = req.body.query
     const fields = req.body.fields
