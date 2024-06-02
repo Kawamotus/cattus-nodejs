@@ -55,13 +55,26 @@ class Utils {
     unFlatten(data) {
         const result = {};
         for (const i in data) {
-          const keys = i.split('.');
-          keys.reduce((acc, key, index) => {
-            return acc[key] = acc[key] || (index === keys.length - 1 ? data[i] : {});
-          }, result);
+            const keys = i.split('.');
+            keys.reduce((acc, key, index) => {
+                return acc[key] = acc[key] || (index === keys.length - 1 ? data[i] : {});
+            }, result);
         }
         return result;
-      };
+    };
+
+    async imageUrlToBase64(imageUrl) {
+        try {
+            const response = await fetch(imageUrl);
+            const arrayBuffer = await response.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            const base64Image = buffer.toString('base64');
+            return `data:${response.headers.get('content-type')};base64,${base64Image}`;
+        } catch (error) {
+            console.error('Erro ao converter imagem em Base64:', error);
+            throw error;
+        }
+    };
 }
 
 export default new Utils();
