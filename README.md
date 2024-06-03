@@ -1,6 +1,6 @@
 # Cattus API NodeJs
 
-Repositório da API utilizada no Projeto Integrador de 2024-1.
+Repositório da API consumida pelo Front-end [Cattus React](https://github.com/Kawamotus/cattus-react).
 
 ## Instalação
 
@@ -10,7 +10,7 @@ Repositório da API utilizada no Projeto Integrador de 2024-1.
 
     npm start
     
-# CATTUS API
+# Documentação
 
 Documentação das rotas no Postman:
 https://documenter.getpostman.com/view/17741130/2sA3QwbpLw
