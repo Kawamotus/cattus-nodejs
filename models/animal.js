@@ -6,6 +6,7 @@ const animal = new mongoose.Schema({
     petEntry: Date,
     petGender: String,
     petCharacteristics: {
+        petCastrated: String,
         petType: String,
         petBreed: String,
         petSize: String
