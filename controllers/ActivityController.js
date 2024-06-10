@@ -71,5 +71,16 @@ router.delete("/delete/:activity_id", (req, res) => {
     })
 })
 
+router.get("/charts/average-animal-activity", async (req, res) => {
+    const company = req.session.user.company
+    console.log(company);
+    try {
+        const operation = await ActivityServices.SelectAverageActivitiesTime(company)
+        res.send(operation)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Erro interno no servidor." })
+    }
+})
 
 export default router;
