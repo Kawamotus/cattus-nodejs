@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import activity from "../models/activity.js";
+import utils from "../utils/utils.js";
 
 const Activity = mongoose.model("activity", activity);
 
@@ -13,66 +14,9 @@ class ActivityServices {
         return Activity.find();
     }
 
-    SelectAverageActivitiesTime(company) {
-        const pipeline = [
-            {
-                $lookup: {
-                    from: "animals",
-                    localField: "activityAuthor",
-                    foreignField: "_id",
-                    as: "activityAuthor"
-                }
-            },
-            {
-                $unwind: "$activityAuthor"
-            },
-            {
-                $match: {
-                    "activityAuthor.company": new mongoose.Types.ObjectId(company)
-                }
-            },
-            {
-                $group: {
-                    _id: "$activityAuthor.petCharacteristics.petType",
-                    avgActivityTime: {
-                        $avg: {
-                            $divide: [
-                                {
-                                    $subtract: [
-                                        { $toDate: "$activityData.activityEnd" },
-                                        { $toDate: "$activityData.activityStart" }
-                                    ]
-                                },
-                                60000 // Convertendo milissegundos para minutos
-                            ]
-                        }
-                    }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    petType: "$_id",
-                    avgActivityTime: { $round: ["$avgActivityTime", 2] },
-                    label: {
-                        $cond: [
-                            { $eq: ["$_id", "Gato"] },
-                            "Atividade dos Gatos",
-                            {
-                                $cond: [
-                                    { $eq: ["$_id", "Cachorro"] },
-                                    "Atividade dos Cachorros",
-                                    "Outro Tipo de Animal"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            }
-        ]
-
-
-        return Activity.aggregate(pipeline)
+    SelectAverageActivitiesTime(company, interval) {
+        company = new mongoose.Types.ObjectId(company)
+        return Activity.aggregate(utils.createPipeline(company, interval))
 
     }
 
