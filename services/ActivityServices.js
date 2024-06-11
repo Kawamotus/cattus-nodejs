@@ -1,28 +1,35 @@
 import mongoose from "mongoose";
 import activity from "../models/activity.js";
+import utils from "../utils/utils.js";
 
 const Activity = mongoose.model("activity", activity);
 
-class ActivityServices{
+class ActivityServices {
 
-    SelectAll(id){
-        return Activity.find({activityAuthor: id}).populate("activityAuthor");
+    SelectAll(id) {
+        return Activity.find({ activityAuthor: id }).populate("activityAuthor");
     }
 
-    SelectAllNoCriteria(){
+    SelectAllNoCriteria() {
         return Activity.find();
     }
 
-    SelectOne(id){
+    SelectAverageActivitiesTime(company, interval) {
+        company = new mongoose.Types.ObjectId(company)
+        return Activity.aggregate(utils.createPipeline(company, interval))
+
+    }
+
+    SelectOne(id) {
         return Activity.findById(id).populate("activityAuthor");
     }
 
-    Create(data){
+    Create(data) {
         const newActivity = new Activity(data);
         return newActivity.save()
     }
 
-    Delete(id){
+    Delete(id) {
         return Activity.findByIdAndDelete(id)
     }
 

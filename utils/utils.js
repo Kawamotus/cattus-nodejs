@@ -93,6 +93,110 @@ class Utils {
 
         return updateFields;
     };
+
+    createPipeline(company, interval) {
+        const matchStage = {
+          "activityAuthor.company": company
+        };
+      
+        // Calcule a data de início com base no intervalo fornecido
+        if (interval === 'weekly') {
+          const date = new Date();
+          date.setDate(date.getDate() - 7);
+          matchStage.$or = [
+            { "activityData.activityStart": { $gte: date } },
+            { "activityData.activityEnd": { $gte: date } }
+          ];
+        } else if (interval === 'monthly') {
+          const date = new Date();
+          date.setMonth(date.getMonth() - 1);
+          matchStage.$or = [
+            { "activityData.activityStart": { $gte: date } },
+            { "activityData.activityEnd": { $gte: date } }
+          ];
+        } else if (interval !== 'all') {
+          throw new Error('Intervalo não suportado. Use "weekly", "monthly" ou "all".');
+        }
+      
+        return [
+          {
+            $lookup: {
+              from: "animals",
+              localField: "activityAuthor",
+              foreignField: "_id",
+              as: "activityAuthor"
+            }
+          },
+          {
+            $unwind: "$activityAuthor"
+          },
+          {
+            $match: matchStage
+          },
+          {
+            $facet: {
+              gatos: [
+                { $match: { "activityAuthor.petCharacteristics.petType": "Gato" } },
+                {
+                  $group: {
+                    _id: { activityName: { $toLower: "$activityData.activityName" } },
+                    avgActivityTime: {
+                      $avg: {
+                        $divide: [
+                          { 
+                            $subtract: [
+                              { $toDate: "$activityData.activityEnd" },
+                              { $toDate: "$activityData.activityStart" }
+                            ]
+                          },
+                          60000 // Convertendo milissegundos para minutos
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  $project: {
+                    _id: 0,
+                    activityName: "$_id.activityName",
+                    avgActivityTime: { $round: ["$avgActivityTime", 2] },
+                  }
+                },
+                { $sort: { activityName: 1 } }
+              ],
+              cachorros: [
+                { $match: { "activityAuthor.petCharacteristics.petType": "Cachorro" } },
+                {
+                  $group: {
+                    _id: { activityName: { $toLower: "$activityData.activityName" } },
+                    avgActivityTime: {
+                      $avg: {
+                        $divide: [
+                          { 
+                            $subtract: [
+                              { $toDate: "$activityData.activityEnd" },
+                              { $toDate: "$activityData.activityStart" }
+                            ]
+                          },
+                          60000 // Convertendo milissegundos para minutos
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  $project: {
+                    _id: 0,
+                    activityName: "$_id.activityName",
+                    avgActivityTime: { $round: ["$avgActivityTime", 2] },
+                  }
+                },
+                { $sort: { activityName: 1 } }
+              ]
+            }            
+          }          
+        ]
+    }
 }
 
 export default new Utils();
