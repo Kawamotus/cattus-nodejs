@@ -16,7 +16,13 @@ class ActivityServices {
 
     SelectAverageActivitiesTime(company, interval) {
         company = new mongoose.Types.ObjectId(company)
-        return Activity.aggregate(utils.createPipeline(company, interval))
+        return Activity.aggregate(utils.pipelineAverageActivitiesTime(company, interval))
+
+    }
+
+    SelectSickAnimals(company, interval) {
+        company = new mongoose.Types.ObjectId(company)
+        return Activity.aggregate(utils.PipelineSickAnimals(company, interval))
 
     }
 

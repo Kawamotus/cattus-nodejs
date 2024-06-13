@@ -94,7 +94,7 @@ class Utils {
         return updateFields;
     };
 
-    createPipeline(company, interval) {
+    pipelineAverageActivitiesTime(company, interval) {
         const matchStage = {
           "activityAuthor.company": company
         };
@@ -196,6 +196,14 @@ class Utils {
             }            
           }          
         ]
+    }
+
+    pipelineSickAnimals(company) {
+      const matchStage = {
+        "activityAuthor.company": company
+      };
+
+      
     }
 }
 
