@@ -122,7 +122,7 @@ router.post("/login", async (req, res) => {
         }
 
         if (!await bcrypt.compare(employeePassword, checkUserExists.employeePassword)) {
-            return res.status(401).send({ message: 'Senha inválida.' })
+            return res.status(401).send({ message: 'Email ou senha inválidos.' })
         }
 
 
