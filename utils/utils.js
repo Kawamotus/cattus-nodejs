@@ -199,11 +199,74 @@ class Utils {
     }
 
     pipelineSickAnimals(company) {
-      const matchStage = {
-        "activityAuthor.company": company
-      };
-
-      
+      return [
+        {
+          $match: {
+            $or: [
+              {
+                "petStatus.petCurrentStatus": "1"
+              },
+              {
+                "petStatus.petCurrentStatus": "0"
+              }
+            ]
+          }
+        },
+        {
+          $match: {
+            company: company
+          }
+        },
+        {
+          $facet: {
+            gatos: [
+              {
+                $match: {
+                  "petCharacteristics.petType": "Gato"
+                }
+              },
+              {
+                $group: {
+                  _id: "$petStatus.petCurrentStatus",
+                  count: {
+                    $sum: 1
+                  }
+                }
+              },
+              {
+                $project: {
+                  _id: 0,
+                  status: "$_id",
+                  quantidade: "$count"
+                }
+              }
+            ],
+            cachorros: [
+              {
+                $match: {
+                  "petCharacteristics.petType":
+                    "Cachorro"
+                }
+              },
+              {
+                $group: {
+                  _id: "$petStatus.petCurrentStatus",
+                  count: {
+                    $sum: 1
+                  }
+                }
+              },
+              {
+                $project: {
+                  _id: 0,
+                  status: "$_id",
+                  quantidade: "$count"
+                }
+              }
+            ]
+          },
+        },  
+      ]
     }
 }
 

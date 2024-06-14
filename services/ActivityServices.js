@@ -20,12 +20,6 @@ class ActivityServices {
 
     }
 
-    SelectSickAnimals(company, interval) {
-        company = new mongoose.Types.ObjectId(company)
-        return Activity.aggregate(utils.PipelineSickAnimals(company, interval))
-
-    }
-
     SelectOne(id) {
         return Activity.findById(id).populate("activityAuthor");
     }
