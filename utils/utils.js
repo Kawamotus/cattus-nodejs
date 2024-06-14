@@ -96,177 +96,251 @@ class Utils {
 
     pipelineAverageActivitiesTime(company, interval) {
         const matchStage = {
-          "activityAuthor.company": company
+            "activityAuthor.company": company
         };
-      
+
         // Calcule a data de início com base no intervalo fornecido
         if (interval === 'weekly') {
-          const date = new Date();
-          date.setDate(date.getDate() - 7);
-          matchStage.$or = [
-            { "activityData.activityStart": { $gte: date } },
-            { "activityData.activityEnd": { $gte: date } }
-          ];
+            const date = new Date();
+            date.setDate(date.getDate() - 7);
+            matchStage.$or = [
+                { "activityData.activityStart": { $gte: date } },
+                { "activityData.activityEnd": { $gte: date } }
+            ];
         } else if (interval === 'monthly') {
-          const date = new Date();
-          date.setMonth(date.getMonth() - 1);
-          matchStage.$or = [
-            { "activityData.activityStart": { $gte: date } },
-            { "activityData.activityEnd": { $gte: date } }
-          ];
+            const date = new Date();
+            date.setMonth(date.getMonth() - 1);
+            matchStage.$or = [
+                { "activityData.activityStart": { $gte: date } },
+                { "activityData.activityEnd": { $gte: date } }
+            ];
         } else if (interval !== 'all') {
-          throw new Error('Intervalo não suportado. Use "weekly", "monthly" ou "all".');
+            throw new Error('Intervalo não suportado. Use "weekly", "monthly" ou "all".');
         }
-      
+
         return [
-          {
-            $lookup: {
-              from: "animals",
-              localField: "activityAuthor",
-              foreignField: "_id",
-              as: "activityAuthor"
+            {
+                $lookup: {
+                    from: "animals",
+                    localField: "activityAuthor",
+                    foreignField: "_id",
+                    as: "activityAuthor"
+                }
+            },
+            {
+                $unwind: "$activityAuthor"
+            },
+            {
+                $match: matchStage
+            },
+            {
+                $facet: {
+                    gatos: [
+                        { $match: { "activityAuthor.petCharacteristics.petType": "Gato" } },
+                        {
+                            $group: {
+                                _id: { activityName: { $toLower: "$activityData.activityName" } },
+                                avgActivityTime: {
+                                    $avg: {
+                                        $divide: [
+                                            {
+                                                $subtract: [
+                                                    { $toDate: "$activityData.activityEnd" },
+                                                    { $toDate: "$activityData.activityStart" }
+                                                ]
+                                            },
+                                            60000 // Convertendo milissegundos para minutos
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                activityName: "$_id.activityName",
+                                avgActivityTime: { $round: ["$avgActivityTime", 2] },
+                            }
+                        },
+                        { $sort: { activityName: 1 } }
+                    ],
+                    cachorros: [
+                        { $match: { "activityAuthor.petCharacteristics.petType": "Cachorro" } },
+                        {
+                            $group: {
+                                _id: { activityName: { $toLower: "$activityData.activityName" } },
+                                avgActivityTime: {
+                                    $avg: {
+                                        $divide: [
+                                            {
+                                                $subtract: [
+                                                    { $toDate: "$activityData.activityEnd" },
+                                                    { $toDate: "$activityData.activityStart" }
+                                                ]
+                                            },
+                                            60000 // Convertendo milissegundos para minutos
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                activityName: "$_id.activityName",
+                                avgActivityTime: { $round: ["$avgActivityTime", 2] },
+                            }
+                        },
+                        { $sort: { activityName: 1 } }
+                    ]
+                }
             }
-          },
-          {
-            $unwind: "$activityAuthor"
-          },
-          {
-            $match: matchStage
-          },
-          {
-            $facet: {
-              gatos: [
-                { $match: { "activityAuthor.petCharacteristics.petType": "Gato" } },
-                {
-                  $group: {
-                    _id: { activityName: { $toLower: "$activityData.activityName" } },
-                    avgActivityTime: {
-                      $avg: {
-                        $divide: [
-                          { 
-                            $subtract: [
-                              { $toDate: "$activityData.activityEnd" },
-                              { $toDate: "$activityData.activityStart" }
-                            ]
-                          },
-                          60000 // Convertendo milissegundos para minutos
-                        ]
-                      }
-                    }
-                  }
-                },
-                {
-                  $project: {
-                    _id: 0,
-                    activityName: "$_id.activityName",
-                    avgActivityTime: { $round: ["$avgActivityTime", 2] },
-                  }
-                },
-                { $sort: { activityName: 1 } }
-              ],
-              cachorros: [
-                { $match: { "activityAuthor.petCharacteristics.petType": "Cachorro" } },
-                {
-                  $group: {
-                    _id: { activityName: { $toLower: "$activityData.activityName" } },
-                    avgActivityTime: {
-                      $avg: {
-                        $divide: [
-                          { 
-                            $subtract: [
-                              { $toDate: "$activityData.activityEnd" },
-                              { $toDate: "$activityData.activityStart" }
-                            ]
-                          },
-                          60000 // Convertendo milissegundos para minutos
-                        ]
-                      }
-                    }
-                  }
-                },
-                {
-                  $project: {
-                    _id: 0,
-                    activityName: "$_id.activityName",
-                    avgActivityTime: { $round: ["$avgActivityTime", 2] },
-                  }
-                },
-                { $sort: { activityName: 1 } }
-              ]
-            }            
-          }          
         ]
     }
 
     pipelineSickAnimals(company) {
-      return [
-        {
-          $match: {
-            $or: [
-              {
-                "petStatus.petCurrentStatus": "1"
-              },
-              {
-                "petStatus.petCurrentStatus": "0"
-              }
-            ]
-          }
-        },
-        {
-          $match: {
-            company: company
-          }
-        },
-        {
-          $facet: {
-            gatos: [
-              {
+        return [
+            {
                 $match: {
-                  "petCharacteristics.petType": "Gato"
+                    $or: [
+                        {
+                            "petStatus.petCurrentStatus": "2"
+                        },
+                        {
+                            "petStatus.petCurrentStatus": "1"
+                        },
+                        {
+                            "petStatus.petCurrentStatus": "0"
+                        }
+                    ]
                 }
-              },
-              {
-                $group: {
-                  _id: "$petStatus.petCurrentStatus",
-                  count: {
-                    $sum: 1
-                  }
-                }
-              },
-              {
-                $project: {
-                  _id: 0,
-                  status: "$_id",
-                  quantidade: "$count"
-                }
-              }
-            ],
-            cachorros: [
-              {
+            },
+            {
                 $match: {
-                  "petCharacteristics.petType":
-                    "Cachorro"
+                    company: company
                 }
-              },
-              {
-                $group: {
-                  _id: "$petStatus.petCurrentStatus",
-                  count: {
-                    $sum: 1
-                  }
+            },
+            {
+                $facet: {
+                    gatos: [
+                        {
+                            $match: {
+                                "petCharacteristics.petType": "Gato"
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: "$petStatus.petCurrentStatus",
+                                count: {
+                                    $sum: 1
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                status: "$_id",
+                                quantidade: "$count"
+                            }
+                        }
+                    ],
+                    cachorros: [
+                        {
+                            $match: {
+                                "petCharacteristics.petType":
+                                    "Cachorro"
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: "$petStatus.petCurrentStatus",
+                                count: {
+                                    $sum: 1
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                status: "$_id",
+                                quantidade: "$count"
+                            }
+                        }
+                    ]
+                },
+            },
+        ]
+    }
+
+    pipelineTotalAnimals(company) {
+        return [
+            {
+                $match: {
+                    company: company,
                 }
-              },
-              {
+            },
+            {
+                $facet: {
+                    cachorro: [
+                        {
+                            $match: {
+                                'petCharacteristics.petType': 'Cachorro'
+                            }
+                        }, {
+                            $group: {
+                                _id: '$petCharacteristics.petType',
+                                count: {
+                                    $sum: 1
+                                }
+                            }
+                        }, {
+                            $project: {
+                                _id: 0
+                            }
+                        }
+                    ],
+                    gato: [
+                        {
+                            $match: {
+                                'petCharacteristics.petType': 'Gato'
+                            }
+                        }, {
+                            $group: {
+                                _id: '$petCharacteristics.petType',
+                                count: {
+                                    $sum: 1
+                                }
+                            }
+                        }, {
+                            $project: {
+                                _id: 0
+                            }
+                        }
+                    ]
+                }
+            },
+            {
                 $project: {
-                  _id: 0,
-                  status: "$_id",
-                  quantidade: "$count"
+                  cachorro: {                    
+                      $ifNull: [
+                        {
+                          $arrayElemAt: ["$cachorro.count", 0]
+                        },
+                        0
+                      ]
+                    },
+                    gato: {
+                      $ifNull: [
+                        {
+                          $arrayElemAt: ["$gato.count", 0]
+                        },
+                        0
+                      ]
+                    }
+           
                 }
               }
-            ]
-          },
-        },  
-      ]
+        ]
     }
 }
 

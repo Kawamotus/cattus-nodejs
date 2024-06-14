@@ -21,6 +21,11 @@ class AnimalServices{
     SelectSickAnimals(company) {
         company = new mongoose.Types.ObjectId(company)
         return Animal.aggregate(utils.pipelineSickAnimals(company))
+  }
+  
+    SelectTotalAnimals(company) {
+        company = new mongoose.Types.ObjectId(company)
+        return Animal.aggregate(utils.pipelineTotalAnimals(company))
     }
 
     Create(data){
