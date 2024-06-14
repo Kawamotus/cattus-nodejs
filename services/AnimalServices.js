@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import animal from "../models/animal.js";
+import utils from "../utils/utils.js";
 
 const Animal = mongoose.model("Animal", animal);
 
@@ -17,8 +18,17 @@ class AnimalServices{
         return Animal.findById(id).populate("company");
     }
 
+    SelectSickAnimals(company) {
+        company = new mongoose.Types.ObjectId(company)
+        return Animal.aggregate(utils.pipelineSickAnimals(company))
+  }
+  
+    SelectTotalAnimals(company) {
+        company = new mongoose.Types.ObjectId(company)
+        return Animal.aggregate(utils.pipelineTotalAnimals(company))
+    }
+
     Create(data){
-        //companyCode pegamos da sessao?
         const newAnimal = new Animal(data);
         return newAnimal.save()
     }

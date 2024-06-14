@@ -99,6 +99,28 @@ router.post("/search", async (req, res) => {
     }
 })
 
+router.get("/charts/sick-animals", async (req, res) => {
+    const company = req.session.user.company
+    try {
+        const [result] = await AnimalServices.SelectSickAnimals(company)
+        res.send({ok: true, result})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Erro interno no servidor." })
+    }
+})
+
+router.get("/charts/total-animals", async (req, res) => {
+    const company = req.session.user.company
+    try {
+        const [result] = await AnimalServices.SelectTotalAnimals(company)
+        res.send({ok: true, result})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Erro interno no servidor." })
+    }
+})
+
 router.delete("/delete/:animal_id", (req, res) => {
     const operation = AnimalServices.Delete(req.params.animal_id)
     operation.then(result => {
