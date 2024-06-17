@@ -19,8 +19,9 @@ class Utils {
             name: employee.employeeName,
             picture: employee.employeePicture,
             accessLevel: employee.employeeAccessLevel,
+            companyName: employee.company.companyName,
             company: employee.company._id
-        }, "gatinhos", { expiresIn: 3600 })
+        }, "gatinhos", { expiresIn: 36000 })
     }
 
     generateSearchQuery(query, fields) {
@@ -321,25 +322,25 @@ class Utils {
             },
             {
                 $project: {
-                  cachorro: {                    
-                      $ifNull: [
-                        {
-                          $arrayElemAt: ["$cachorro.count", 0]
-                        },
-                        0
-                      ]
+                    cachorro: {
+                        $ifNull: [
+                            {
+                                $arrayElemAt: ["$cachorro.count", 0]
+                            },
+                            0
+                        ]
                     },
                     gato: {
-                      $ifNull: [
-                        {
-                          $arrayElemAt: ["$gato.count", 0]
-                        },
-                        0
-                      ]
+                        $ifNull: [
+                            {
+                                $arrayElemAt: ["$gato.count", 0]
+                            },
+                            0
+                        ]
                     }
-           
+
                 }
-              }
+            }
         ]
     }
 }
