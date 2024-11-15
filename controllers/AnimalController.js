@@ -12,17 +12,24 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 router.post("/create", upload.fields([{ name: 'petPicture', maxCount: 1 }, { name: 'petVaccCard', maxCount: 1 }]), middlewares.checkNecessaryFields(Animal), async (req, res) => {
-    const [filesPetVaccCard] = req.files.petVaccCard
-    const [filesPetPicture] = req.files.petPicture
+    const [filesPetVaccCard] = req.files?.petVaccCard ? req.files.petVaccCard : ""
+    const [filesPetPicture] = req.files?.petPicture ? req.files.petPicture : ""
 
-    const petPicture = `${Date.now()}_${filesPetPicture.originalname}`
-    const petVaccCard = `${Date.now()}_${filesPetVaccCard.originalname}`
     try {
-        await utils.uploadPicture(filesPetPicture, petPicture)
-        await utils.uploadPicture(filesPetVaccCard, petVaccCard)
+        let petVaccCardUrl = ""
+        let petPictureUrl = ""
 
-        const petPictureUrl = await utils.getUploadedPicture(petPicture)
-        const petVaccCardUrl = await utils.getUploadedPicture(petVaccCard)
+        if(filesPetVaccCard) {
+            const petVaccCard = `${Date.now()}_${filesPetVaccCard.originalname}`
+            await utils.uploadPicture(filesPetVaccCard, petVaccCard)
+            petVaccCardUrl = await utils.getUploadedPicture(petVaccCard)            
+        }
+        
+        if(filesPetPicture) {
+            const petPicture = `${Date.now()}_${filesPetPicture.originalname}`
+            await utils.uploadPicture(filesPetPicture, petPicture)
+            petPictureUrl = await utils.getUploadedPicture(petPicture)
+        }
 
         const data = utils.unFlatten(req.body)
         try {
@@ -44,7 +51,6 @@ router.post("/create", upload.fields([{ name: 'petPicture', maxCount: 1 }, { nam
                 message: "Erro ao cadastrar o animal.",
             });
         }
-
 
     } catch (error) {
         console.log(error);
