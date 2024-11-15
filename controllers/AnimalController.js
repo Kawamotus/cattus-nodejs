@@ -14,11 +14,11 @@ const upload = multer({ storage: storage });
 router.post("/create", upload.fields([{ name: 'petPicture', maxCount: 1 }, { name: 'petVaccCard', maxCount: 1 }]), middlewares.checkNecessaryFields(Animal), async (req, res) => {
     const [filesPetVaccCard] = req.files?.petVaccCard ? req.files.petVaccCard : ""
     const [filesPetPicture] = req.files?.petPicture ? req.files.petPicture : ""
-
+    
     try {
         let petVaccCardUrl = ""
         let petPictureUrl = ""
-
+        
         if(filesPetVaccCard) {
             const petVaccCard = `${Date.now()}_${filesPetVaccCard.originalname}`
             await utils.uploadPicture(filesPetVaccCard, petVaccCard)
@@ -32,10 +32,12 @@ router.post("/create", upload.fields([{ name: 'petPicture', maxCount: 1 }, { nam
         }
 
         const data = utils.unFlatten(req.body)
+        const nonObrigatoryAnimalsFields = utils.nonObrigatoryAnimalsFields()
         try {
             const operation = await AnimalServices.Create({
                 petPicture: petPictureUrl,
                 petVaccCard: petVaccCardUrl,
+                ...nonObrigatoryAnimalsFields,
                 ...data
             })
 

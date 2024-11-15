@@ -32,7 +32,7 @@ const animal = new mongoose.Schema(
       meow: String, // ex: mia muito?, alto?
     },
     petComorbidities: String,
-    petVaccCard: String,
+    petVaccines: Array,
     company: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",

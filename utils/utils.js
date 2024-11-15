@@ -108,6 +108,36 @@ class Utils {
     return updateFields;
   }
 
+  nonObrigatoryAnimalsFields() {
+    return {
+      petVaccines: [],
+      petCharacteristics: {
+        petCastrated: "",
+        petBreed: "",
+        petSize: "",
+      },
+      petStatus: {
+        petCurrentStatus: "0",
+        petOccurrencesQuantity: 0,
+        petLastOccurrence: null,
+      },
+      physicalCharacteristics: {
+        furColor: "branca",
+        furLength: "curto",
+        eyeColor: "castanho",
+        size: 0,
+        weight: 0,
+      },
+      behavioralCharacteristics: {
+        personality: "amigável",
+        activityLevel: "ativo",
+        socialBehavior: "",
+        meow: "",
+      },
+      petComorbidities: "",
+    }
+  }
+
   pipelineAverageActivitiesTime(company, interval) {
     const matchStage = {
       "activityAuthor.company": company,

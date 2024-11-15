@@ -16,7 +16,7 @@ class Middlewares {
                 "petStatus",
                 "petPicture",
                 "petEntry",
-                "petVaccCard",
+                "petVaccines",
                 "physicalCharacteristics",
                 "behavioralCharacteristics",
             ];
