@@ -77,7 +77,7 @@ router.get("/charts/average-animal-activity/:interval", async (req, res) => {
 
     try {
         const [result] = await ActivityServices.SelectAverageActivitiesTime(company, interval)
-        res.send({ok: true, intervalo: interval, result})
+        res.send({intervalo: interval, result})
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: "Erro interno no servidor." })

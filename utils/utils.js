@@ -114,7 +114,6 @@ class Utils {
       petCharacteristics: {
         petCastrated: "",
         petBreed: "",
-        petSize: "",
       },
       petStatus: {
         petCurrentStatus: "0",
@@ -135,7 +134,7 @@ class Utils {
         meow: "",
       },
       petComorbidities: "",
-    }
+    };
   }
 
   pipelineAverageActivitiesTime(company, interval) {
@@ -182,42 +181,6 @@ class Utils {
       {
         $facet: {
           gatos: [
-            { $match: { "activityAuthor.petCharacteristics.petType": "Gato" } },
-            {
-              $group: {
-                _id: {
-                  activityName: { $toLower: "$activityData.activityName" },
-                },
-                avgActivityTime: {
-                  $avg: {
-                    $divide: [
-                      {
-                        $subtract: [
-                          { $toDate: "$activityData.activityEnd" },
-                          { $toDate: "$activityData.activityStart" },
-                        ],
-                      },
-                      60000, // Convertendo milissegundos para minutos
-                    ],
-                  },
-                },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-                activityName: "$_id.activityName",
-                avgActivityTime: { $round: ["$avgActivityTime", 2] },
-              },
-            },
-            { $sort: { activityName: 1 } },
-          ],
-          cachorros: [
-            {
-              $match: {
-                "activityAuthor.petCharacteristics.petType": "Cachorro",
-              },
-            },
             {
               $group: {
                 _id: {
@@ -264,15 +227,36 @@ class Utils {
       },
       {
         $group: {
-          _id: "$petStatus.petCurrentStatus",
+          _id: {
+            status: "$petStatus.petCurrentStatus",
+            gender: "$petGender",
+          },
           quantidade: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.status",
+          total: { $sum: "$quantidade" },
+          femea: {
+            $sum: {
+              $cond: [{ $eq: ["$_id.gender", "Fêmea"] }, "$quantidade", 0],
+            },
+          },
+          macho: {
+            $sum: {
+              $cond: [{ $eq: ["$_id.gender", "Macho"] }, "$quantidade", 0],
+            },
+          },
         },
       },
       {
         $project: {
           _id: 0,
           status: "$_id",
-          quantidade: "$quantidade",
+          total: 1,
+          femea: 1,
+          macho: 1,
         },
       },
       {
@@ -281,7 +265,9 @@ class Utils {
           gatos: {
             $push: {
               status: "$status",
-              quantidade: "$quantidade",
+              total: "$total",
+              femea: "$femea",
+              macho: "$macho",
             },
           },
         },
@@ -299,22 +285,39 @@ class Utils {
     return [
       {
         $match: {
-          "petStatus.petCurrentStatus": {
-            $in: ["0", "1", "2"],
-          },
           company: company,
         },
       },
       {
         $group: {
-          _id: null,
+          _id: "$petGender",
           quantidade: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$quantidade" },
+          femea: {
+            $sum: {
+              $cond: [{ $eq: ["$_id", "Fêmea"] }, "$quantidade", 0],
+            },
+          },
+          macho: {
+            $sum: {
+              $cond: [{ $eq: ["$_id", "Macho"] }, "$quantidade", 0],
+            },
+          },
         },
       },
       {
         $project: {
           _id: 0,
-          "gatos.quantidade": "$quantidade",
+          gatos: {
+            total: "$total",
+            femea: "$femea",
+            macho: "$macho",
+          },
         },
       },
     ];

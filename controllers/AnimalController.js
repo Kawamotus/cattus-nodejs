@@ -111,7 +111,7 @@ router.get("/charts/sick-animals", async (req, res) => {
     const company = req.session.user.company
     try {
         const [result] = await AnimalServices.SelectSickAnimals(company)
-        res.send({ok: true, result})
+        res.send(result)
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: "Erro interno no servidor." })
@@ -121,8 +121,8 @@ router.get("/charts/sick-animals", async (req, res) => {
 router.get("/charts/total-animals", async (req, res) => {
     const company = req.session.user.company
     try {
-        const [result] = await AnimalServices.SelectTotalAnimals(company)
-        res.send({ok: true, result})
+        const result = await AnimalServices.SelectTotalAnimals(company)
+        res.send(result)
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: "Erro interno no servidor." })
