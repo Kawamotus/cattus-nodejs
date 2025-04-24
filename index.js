@@ -63,24 +63,26 @@ app.use("/rotate", RotationController);
 try {
     const db = await database.connect()
     const server = http.createServer(app)
-    const io = new Server({
-        cors: {
-            origin: "*"
-        },
-        ...server
-    })
-    server.listen(8080, () => console.log("Servidor rodando: http://localhost:8080"))
+    // const io = new Server({
+    //     cors: {
+    //         origin: "*"
+    //     },
+    //     ...server
+    // })
+  
+    const PORT = process.env.PORT
+    server.listen(PORT, () => console.log(`Servidor rodando: http://localhost:${PORT}`))
 
-    try {
-        io.listen(server)
-        io.on("connection", (socket) => {
-            console.log("Cattus WEB conectado.");
-            socketHandlers(db, socket)
-        });
+    // try {
+    //     io.listen(server)
+    //     io.on("connection", (socket) => {
+    //         console.log("Cattus WEB conectado.");
+    //         socketHandlers(db, socket)
+    //     });
 
-    } catch (error) {
-        console.log("Ocorreu um erro ao tentar iniciar o servidor WebSocket: " + error);
-    }
+    // } catch (error) {
+    //     console.log("Ocorreu um erro ao tentar iniciar o servidor WebSocket: " + error);
+    // }
 
 } catch (error) {
     console.log("Ocorreu um erro ao tentar iniciar o servidor: " + error)
