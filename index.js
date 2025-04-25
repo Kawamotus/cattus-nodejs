@@ -16,6 +16,10 @@ import StockController from "./controllers/StockController.js";
 import ReportController from "./controllers/ReportController.js";
 import RotationController from "./controllers/RotationController.js";
 
+import dotenv from "dotenv"
+
+dotenv.config()
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 app.post("/upload-image", upload.single('imagem'), async (req, res) => {
