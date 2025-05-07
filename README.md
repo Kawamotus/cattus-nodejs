@@ -13,4 +13,4 @@ Repositório da API consumida pelo Front-end [Cattus React](https://github.com/K
 # Documentação
 
 Documentação das rotas no Postman:
-https://documenter.getpostman.com/view/17741130/2sA3QwbpLw
+https://documenter.getpostman.com/view/34609445/2sB2j1gXLK
