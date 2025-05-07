@@ -7,7 +7,7 @@ const Activity = mongoose.model("activity", activity);
 class ActivityServices {
 
     SelectAll(id) {
-        return Activity.find({ activityAuthor: id }).populate("activityAuthor");
+        return Activity.find({ activityAuthor: id }).populate("activityAuthor").populate("activityCameraAuthor");
     }
 
     SelectAllNoCriteria() {
