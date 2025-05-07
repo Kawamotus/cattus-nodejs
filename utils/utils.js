@@ -110,26 +110,27 @@ class Utils {
 
   nonObrigatoryAnimalsFields() {
     return {
+      petFavorite: false,
       petVaccines: [],
       petCharacteristics: {
         petCastrated: "",
         petBreed: "",
       },
       petStatus: {
-        petCurrentStatus: "0",
+        petCurrentStatus: "",
         petOccurrencesQuantity: 0,
         petLastOccurrence: null,
       },
       physicalCharacteristics: {
-        furColor: "branca",
-        furLength: "curto",
-        eyeColor: "castanho",
+        furColor: "",
+        furLength: "",
+        eyeColor: "",
         size: 0,
         weight: 0,
       },
       behavioralCharacteristics: {
-        personality: "amigável",
-        activityLevel: "ativo",
+        personality: "",
+        activityLevel: "",
         socialBehavior: "",
         meow: "",
       },
