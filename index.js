@@ -1,10 +1,10 @@
-import app from "./config/server.js"
+import app from "./config/server.js";
 import database from "./config/database.js";
-import http from "http"
+import http from "http";
 import { Server } from "socket.io";
 import socketHandlers from "./config/socketHandlers.js";
 import utils from "./utils/utils.js";
-import multer from "multer"
+import multer from "multer";
 
 import ActivityController from "./controllers/ActivityController.js";
 import AnimalController from "./controllers/AnimalController.js";
@@ -18,37 +18,36 @@ import RotationController from "./controllers/RotationController.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-app.post("/upload-image", upload.single('imagem'), async (req, res) => {
-    const file = req.file;
-    const uniqueFileName = `${Date.now()}_${file.originalname}`
+app.post("/upload-image", upload.single("imagem"), async (req, res) => {
+  const file = req.file;
+  console.log(file);
+  const uniqueFileName = `${Date.now()}_${file.originalname}`;
+
+  try {
+    await utils.uploadPicture(file, uniqueFileName);
+    const uploadedImagem = await utils.getUploadedPicture(uniqueFileName);
 
     try {
-        await utils.uploadPicture(file, uniqueFileName)
-        const uploadedImagem = await utils.getUploadedPicture(uniqueFileName)
-
-        try {
-            res.status(200).send({
-                ok: true,
-                message: "Sucesso no upload da imagem.",
-                img_url: uploadedImagem
-            });
-
-        } catch (error) {
-            console.log(error);
-            res.status(400).send({
-                message: "Erro ao fazer upload da imagem.",
-            });
-        }
-
+      res.status(200).send({
+        ok: true,
+        message: "Sucesso no upload da imagem.",
+        img_url: uploadedImagem,
+      });
     } catch (error) {
-        console.log(error);
-        res.status(500).send({ message: "Erro interno no servidor" })
+      console.log(error);
+      res.status(400).send({
+        message: "Erro ao fazer upload da imagem.",
+      });
     }
-})
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Erro interno no servidor" });
+  }
+});
 
 app.get("/", (req, res) => {
-    res.send(req.session.user)
-})
+  res.send(req.session.user);
+});
 
 app.use("/activity", ActivityController);
 app.use("/animal", AnimalController);
@@ -61,28 +60,29 @@ app.use("/report", ReportController);
 app.use("/rotate", RotationController);
 
 try {
-    const db = await database.connect()
-    const server = http.createServer(app)
-    const io = new Server({
-        cors: {
-            origin: "*"
-        },
-        ...server
-    })
-    server.listen(8080, () => console.log("Servidor rodando: http://localhost:8080"))
+  const db = await database.connect();
+  const server = http.createServer(app);
+  const io = new Server({
+    cors: {
+      origin: "*",
+    },
+    ...server,
+  });
+  server.listen(8080, () =>
+    console.log("Servidor rodando: http://localhost:8080")
+  );
 
-    try {
-        io.listen(server)
-        io.on("connection", (socket) => {
-            console.log("Cattus WEB conectado.");
-            socketHandlers(db, socket)
-        });
-
-    } catch (error) {
-        console.log("Ocorreu um erro ao tentar iniciar o servidor WebSocket: " + error);
-    }
-
+  try {
+    io.listen(server);
+    io.on("connection", (socket) => {
+      console.log("Cattus WEB conectado.");
+      socketHandlers(db, socket);
+    });
+  } catch (error) {
+    console.log(
+      "Ocorreu um erro ao tentar iniciar o servidor WebSocket: " + error
+    );
+  }
 } catch (error) {
-    console.log("Ocorreu um erro ao tentar iniciar o servidor: " + error)
+  console.log("Ocorreu um erro ao tentar iniciar o servidor: " + error);
 }
-
