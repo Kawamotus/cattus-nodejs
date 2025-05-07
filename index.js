@@ -16,6 +16,10 @@ import StockController from "./controllers/StockController.js";
 import ReportController from "./controllers/ReportController.js";
 import RotationController from "./controllers/RotationController.js";
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 app.post("/upload-image", upload.single("imagem"), async (req, res) => {
@@ -62,15 +66,28 @@ app.use("/rotate", RotationController);
 try {
   const db = await database.connect();
   const server = http.createServer(app);
-  const io = new Server({
-    cors: {
-      origin: "*",
-    },
-    ...server,
-  });
-  server.listen(8080, () =>
-    console.log("Servidor rodando: http://localhost:8080")
+  // const io = new Server({
+  //     cors: {
+  //         origin: "*"
+  //     },
+  //     ...server
+  // })
+
+  const PORT = process.env.PORT || "8080";
+  server.listen(PORT, () =>
+    console.log(`Servidor rodando: http://localhost:${PORT}`)
   );
+
+  // try {
+  //     io.listen(server)
+  //     io.on("connection", (socket) => {
+  //         console.log("Cattus WEB conectado.");
+  //         socketHandlers(db, socket)
+  //     });
+
+  // } catch (error) {
+  //     console.log("Ocorreu um erro ao tentar iniciar o servidor WebSocket: " + error);
+  // }
 
   try {
     io.listen(server);
