@@ -14,6 +14,8 @@ class Middlewares {
                 "petComorbidities",
                 "petObs",
                 "petStatus",
+                "petFavorite",
+                "lastEditedBy",
                 "petPicture",
                 "petEntry",
                 "petVaccines",

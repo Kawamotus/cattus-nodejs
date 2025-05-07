@@ -14,6 +14,7 @@ const upload = multer({ storage: storage });
 router.post("/create", upload.fields([{ name: 'petPicture', maxCount: 1 }, { name: 'petVaccCard', maxCount: 1 }]), middlewares.checkNecessaryFields(Animal), async (req, res) => {
     const [filesPetVaccCard] = req.files?.petVaccCard ? req.files.petVaccCard : ""
     const [filesPetPicture] = req.files?.petPicture ? req.files.petPicture : ""
+    const userId = req.session.user.id
     
     try {
         let petVaccCardUrl = ""
@@ -34,7 +35,8 @@ router.post("/create", upload.fields([{ name: 'petPicture', maxCount: 1 }, { nam
         const data = utils.unFlatten(req.body)
         const nonObrigatoryAnimalsFields = utils.nonObrigatoryAnimalsFields()
         try {
-            const operation = await AnimalServices.Create({
+          const operation = await AnimalServices.Create({
+                lastEditedBy: userId,
                 petPicture: petPictureUrl,
                 petVaccCard: petVaccCardUrl,
                 ...nonObrigatoryAnimalsFields,
@@ -145,11 +147,15 @@ router.delete("/delete/:animal_id", (req, res) => {
 
 router.patch("/update/:animal_id", async (req, res) => {
     const id = req.params.animal_id
+    const userId = req.session.user.id
     const data = req.body
 
     try {
         const updatedFields = utils.buildUpdateFields(data)
-        const operation = await AnimalServices.Update(id, updatedFields)
+      const operation = await AnimalServices.Update(id, {
+        ...updatedFields,
+        lastEditedBy: userId
+      })
 
         res.send({
             ok: true,

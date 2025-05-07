@@ -7,6 +7,7 @@ const animal = new mongoose.Schema(
     petGender: String,
     petPicture: String,
     petObs: String,
+    petFavorite: Boolean,
     petCharacteristics: {
       petCastrated: String,
       petBreed: String,
@@ -15,19 +16,19 @@ const animal = new mongoose.Schema(
     physicalCharacteristics: {
       furColor: {
         type: String,
-        enum: ["preta", "branca", "cinza", "laranja", "marrom", "mesclada"],
+        enum: ["", "preta", "branca", "cinza", "laranja", "marrom", "mesclada"],
       },
-      furLength: { type: String, enum: ["curto", "médio", "longo"] },
-      eyeColor: { type: String, enum: ["azul", "castanho", "verde"] },
+      furLength: { type: String, enum: ["", "curto", "médio", "longo"] },
+      eyeColor: { type: String, enum: ["", "azul", "castanho", "verde"] },
       size: Number, // em cm
       weight: Number, // em kg
     },
     behavioralCharacteristics: {
       personality: {
         type: String,
-        enum: ["amigável", "reservado", "brincalhão", "independente", "arisco"],
+        enum: ["","amigável", "reservado", "brincalhão", "independente", "arisco"],
       },
-      activityLevel: { type: String, enum: ["ativo", "moderado", "calmo"] },
+      activityLevel: { type: String, enum: ["", "ativo", "moderado", "calmo"] },
       socialBehavior: String, // ex: prefere humanos, gosta de outros gatos, interage bem com crianças
       meow: String, // ex: mia muito?, alto?
     },
@@ -43,6 +44,10 @@ const animal = new mongoose.Schema(
       petOccurrencesQuantity: Number,
       petLastOccurrence: Date,
     },
+    lastEditedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "employee"
+    }
   },
   { timestamps: true }
 );

@@ -7,15 +7,15 @@ const Animal = mongoose.model("Animal", animal);
 class AnimalServices{
 
     SelectAll(company, skip = 0, limit = 10){
-        return Animal.find({company: company}).populate("company").skip(skip).limit(limit)
+        return Animal.find({company: company}).populate("company").populate("lastEditedBy").skip(skip).limit(limit)
     }
 
     SelectAllByFields(company, filter) {
-        return Animal.find({company: company}).find(filter)
+        return Animal.find({company: company}).populate("company").populate("lastEditedBy").find(filter)
     }
 
     SelectOne(id){
-        return Animal.findById(id).populate("company");
+        return Animal.findById(id).populate("company").populate("lastEditedBy");
     }
 
     SelectSickAnimals(company) {
