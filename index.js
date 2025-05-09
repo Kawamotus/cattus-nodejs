@@ -89,17 +89,6 @@ try {
   //     console.log("Ocorreu um erro ao tentar iniciar o servidor WebSocket: " + error);
   // }
 
-  try {
-    io.listen(server);
-    io.on("connection", (socket) => {
-      console.log("Cattus WEB conectado.");
-      socketHandlers(db, socket);
-    });
-  } catch (error) {
-    console.log(
-      "Ocorreu um erro ao tentar iniciar o servidor WebSocket: " + error
-    );
-  }
 } catch (error) {
   console.log("Ocorreu um erro ao tentar iniciar o servidor: " + error);
 }
