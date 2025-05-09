@@ -86,8 +86,6 @@ class ReportServices {
                                         headerRows: 1,
                                         body: [
                                             [{ text: `Animal_ID: ${author._id}`, colSpan: 2, alignment: 'center', style: 'columnsTitle', marginTop: 2, marginLeft: 10, fillColor: '#f75f60' }, {}],
-                                            [{ text: `Tipo: ${author.petCharacteristics.petType} `, marginLeft: 10, marginTop: 5 }, { text: `Raça: ${author.petCharacteristics.petBreed}`, marginTop: 5 }],
-                                            [{ text: `Porte: ${author.petCharacteristics.petSize}`, marginLeft: 10 }, { text: `Sexo: ${author.petGender}` }],
                                             [{ text: `Nascimento: ${author.petBirth.toJSON().slice(0, 10)}`, marginLeft: 10, marginRight: 60 }, { text: `Vacinação: ${author.petVaccCard ? "Sim" : "Não"}`, marginRight: 60 }],
                                             [{ text: `Comorbidades: ${author.petComorbidities}`, colSpan: 2, alignment: 'left', marginLeft: 10 }, {}],
                                             [{ text: `Observações: ${author.petObs}`, colSpan: 2, alignment: 'left', marginLeft: 10 }, {}]
@@ -124,18 +122,7 @@ class ReportServices {
                             ]
                         },
                         layout: 'Layout1',
-                    },
-                    { text: "\n\n Alimentação: \n\n", style: "SectionTitle", pageBreak: 'before' },
-                    "Grafico 1",
-
-                    { text: "\n\n Hidratação: \n\n", style: "SectionTitle" },
-                    "Grafico 2",
-
-                    { text: "\n\n Descanso: \n\n", style: "SectionTitle" },
-                    "Grafico 3",
-
-                    { text: "\n\n Excreção / Defecação: \n\n", style: "SectionTitle" },
-                    "Grafico 4",
+                    }
                 ]
             ],
 
