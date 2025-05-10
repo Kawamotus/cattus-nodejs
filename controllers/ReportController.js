@@ -6,13 +6,14 @@ import ReportServices from "../services/ReportServices.js";
 
 const router = express.Router();
 
-router.get("/:animal_id", async (req, res) => {
+router.post("/:animal_id", async (req, res) => {
+    const { options } = req?.body;
     try {
         const act = await ActivityServices.SelectAll(req.params.animal_id)
         const aut = await AnimalServices.SelectOne(req.params.animal_id)
         res.status(200)
 
-        const pdf = await ReportServices.ReportSingleAnimal(act, aut)
+        const pdf = await ReportServices.ReportSingleAnimal(act, aut, options)
 
         res.setHeader('Content-type', 'application/pdf');
         res.setHeader('Content-disposition', 'inline; filename="relatorio-cattus.pdf"');
