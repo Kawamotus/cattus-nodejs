@@ -43,6 +43,22 @@ const animal = new mongoose.Schema(
       petCurrentStatus: String, // ex: 0 Normal, 1 alerta,  2 grave
       petOccurrencesQuantity: Number,
       petLastOccurrence: Date,
+      petStatusFood: {
+        type: Number,
+        enum: [0, 1, 2]
+      },
+      petStatusWater: {
+        type: Number,
+        enum: [0, 1, 2]
+      },
+      petStatusSleep: {
+        type: Number,
+        enum: [0, 1, 2]
+      },
+      petStatusNeeds: {
+        type: Number,
+        enum: [0, 1, 2]
+      },
     },
     lastEditedBy: {
       type: mongoose.Schema.Types.ObjectId,

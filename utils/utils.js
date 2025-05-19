@@ -120,6 +120,10 @@ class Utils {
         petCurrentStatus: "",
         petOccurrencesQuantity: 0,
         petLastOccurrence: null,
+        petStatusFood: 0,
+        petStatusWater: 0,
+        petStatusSleep: 0,
+        petStatusNeeds: 0,
       },
       physicalCharacteristics: {
         furColor: "",

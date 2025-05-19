@@ -23,6 +23,7 @@ const notification = new mongoose.Schema({
         enum: ['Stock', 'Animal']
     },
     notificationStatus: Boolean,
+    notificationDirection: String,
     notificationDescription: String
 });
 
