@@ -117,4 +117,57 @@ router.get('/select-by-camera/:camera_id', (req, res) => {
     });
 });
 
+router.get('/select-by-company/:company_id', (req, res) => {
+  const companyId = req.params.company_id;
+  const { skip = 0, limit = 20 } = req.query;
+
+  const operation =
+    skip || limit
+      ? ActivityServices.SelectByCompanyIdPaginated(
+          companyId,
+          parseInt(skip),
+          parseInt(limit),
+        )
+      : ActivityServices.SelectByCompanyId(companyId);
+
+  operation
+    .then((result) => {
+      res.send({
+        ok: true,
+        result,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(400).send({
+        message: 'Erro ao listar as atividades dessa companhia.',
+      });
+    });
+});
+
+router.get('/latest-by-company/:company_id', (req, res) => {
+  const companyId = req.params.company_id;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const operation = ActivityServices.SelectByCompanyIdPaginated(
+    companyId,
+    0,
+    limit,
+  );
+
+  operation
+    .then((result) => {
+      res.send({
+        ok: true,
+        result,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(400).send({
+        message: 'Erro ao listar as atividades recentes dessa companhia.',
+      });
+    });
+});
+
 export default router;

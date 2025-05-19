@@ -40,6 +40,42 @@ class ActivityServices {
       .populate('activityAuthor')
       .populate('activityCameraAuthor');
   }
+
+  SelectByCompanyId(companyId) {
+    return Activity.find()
+      .populate({
+        path: 'activityAuthor',
+        match: { company: companyId },
+        populate: {
+          path: 'company',
+        },
+      })
+      .populate('activityCameraAuthor')
+      .then((activities) => {
+        return activities.filter((activity) => activity.activityAuthor);
+      });
+  }
+
+  // Preferivelmente usar esse pois vem cronológico e paginado
+  SelectByCompanyIdPaginated(companyId, skip = 0, limit = 20) {
+    return Activity.find()
+      .populate({
+        path: 'activityAuthor',
+        match: { company: companyId },
+        populate: {
+          path: 'company',
+        },
+      })
+      .populate('activityCameraAuthor')
+      .sort({ 'activityData.activityStart': -1 })
+      .then((activities) => {
+        const filteredActivities = activities.filter(
+          (activity) => activity.activityAuthor,
+        );
+
+        return filteredActivities.slice(skip, skip + limit);
+      });
+  }
 }
 
 export default new ActivityServices();
