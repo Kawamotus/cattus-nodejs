@@ -11,6 +11,12 @@ class ActivityServices {
       .populate('activityCameraAuthor');
   }
 
+  SelectAllByCamera(id) {
+    return Activity.find({ activityCameraAuthor: id })
+      .populate('activityAuthor')
+      .populate('activityCameraAuthor');
+  }
+
   SelectAllNoCriteria() {
     return Activity.find();
   }
@@ -23,7 +29,7 @@ class ActivityServices {
   }
 
   SelectOne(id) {
-    return Activity.findById(id).populate('activityAuthor');
+    return Activity.findById(id).populate('activityAuthor').populate('activityCameraAuthor');
   }
 
   Create(data) {

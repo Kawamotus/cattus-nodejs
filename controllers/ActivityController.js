@@ -48,6 +48,24 @@ router.get('/select-all/:author_id', (req, res) => {
     });
 });
 
+router.get('/select-all-camera/:camera_id', (req, res) => {
+  const operation = ActivityServices.SelectAllByCamera(req.params.camera_id);
+
+  operation
+    .then((result) => {
+      res.send({
+        ok: true,
+        result,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(400).send({
+        message: 'Erro ao listar as atividades.',
+      });
+    });
+});
+
 router.get('/select-one/:activity_id', (req, res) => {
   const operation = ActivityServices.SelectOne(req.params.activity_id);
 
